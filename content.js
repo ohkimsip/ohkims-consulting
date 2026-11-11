@@ -125,7 +125,7 @@ window.SITE_CONTENT = {
     nameKo: "특허법인 오킴스",
     nameEn: "OhKims Patent Law Firm",
     links: [
-      { label: "공식 홈페이지", href: "#", external: true },
+      { label: "공식 홈페이지", href: "https://www.ohkimsip.com/", external: true },
       { label: "콘텐츠 출처", href: "#" }
     ],
     address: "서울특별시 강남구 논현로 427-1, 4층 (역삼동)",
