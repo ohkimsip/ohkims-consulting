@@ -543,11 +543,15 @@ a:hover .arrow { transform: translate(2px, -2px); }
 /* ===== 오킴스 활동: 사진형 글(인스타형) ===== */
 .post-photo { padding-top: 28px; }
 .act { margin-top: 22px; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(360px, 1fr); align-items: start; border: 1px solid var(--line); background: #fff; }
-.act-media { position: relative; background: #0f1d21; aspect-ratio: 4 / 3; overflow: hidden; align-self: start; }
+.act-media { position: relative; background: #0f1d21; aspect-ratio: 4 / 3; max-height: 860px; width: 100%; overflow: hidden; align-self: start; }
+.act.act-portrait { grid-template-columns: minmax(0, 1.05fr) minmax(380px, 1fr); }
 .act-track { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth; }
 .act-track::-webkit-scrollbar { display: none; }
-.act-slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; display: grid; place-items: center; }
-.act-slide img { width: 100%; height: 100%; object-fit: contain; }
+.act-slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; position: relative; overflow: hidden; }
+/* 칸과 비율이 다른 사진: 같은 사진을 흐리게 깔고 원본은 자르지 않고 가운데에 */
+.act-slide::before { content: ""; position: absolute; inset: -30px; background: var(--bg) center / cover no-repeat; filter: blur(28px) brightness(.55) saturate(1.1); }
+.act-slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.act-auto .act-slide::before { display: none; }
 .act-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border-radius: 50%; border: 0; background: rgba(255,255,255,.88); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
 .act-nav::after { content: ""; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; border: solid #222; border-width: 0 2px 2px 0; }
 .act-nav.prev { left: 14px; } .act-nav.prev::after { transform: translate(-30%, -50%) rotate(135deg); }
@@ -568,7 +572,7 @@ a:hover .arrow { transform: translate(2px, -2px); }
 .act-info div { display: grid; grid-template-columns: 44px 1fr; gap: 10px; }
 .act-info dt { color: var(--muted); }
 .act-caption { font-size: 17px; line-height: 1.85; word-break: keep-all; }
-.act-caption p { text-align: justify; }
+.act-caption p { text-align: justify; word-break: normal; overflow-wrap: anywhere; }
 .act-caption p + p { margin-top: .8em; }
 .act-tags { display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--brand); font-size: 15.4px; font-weight: 600; }
 .act-meta { margin-top: auto; display: flex; gap: 12px; font-size: 13.5px; color: var(--muted); padding-top: 14px; border-top: 1px solid var(--line); }

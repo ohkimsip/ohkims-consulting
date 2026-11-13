@@ -62,6 +62,7 @@ class Post:
     auto_cover: str = ""
     layout: str = ""
     photos: list = field(default_factory=list)  # 사진형 글의 사진 주소(순서대로)
+    media_ratio: float = 4 / 3  # 사진형 글 사진 칸 비율(첫 사진 기준, 4:5~16:9로 제한)
     info: list = field(default_factory=list)  # [(항목, 값)] — 행사·일시·장소·주최
 
     @property
@@ -180,7 +181,16 @@ def load_posts(cat_ids: set[str], include_drafts: bool) -> list[Post]:
                 photos = [f"/posts/{slug}/{n}" for n in dict.fromkeys(([cover] if cover else []) + names)]
                 if not cover and names:
                     cover = names[0]
-            info = [(lab, meta[k]) for k, lab in (("event", "행사"), ("when", "일시"), ("place", "장소"), ("host", "주최"))
+            media_ratio = 4 / 3
+            if photos:
+                try:
+                    from PIL import Image
+                    with Image.open(f.parent / photos[0].rsplit("/", 1)[-1]) as im:
+                        w, h = im.size
+                    media_ratio = min(max(w / h, 0.8), 16 / 9)
+                except Exception:
+                    pass
+            info = [(lab, meta[k]) for k, lab in (("event", "행사"), ("when", "일시"), ("place", "장소"), ("host", "기관"))
                     if meta.get(k)]
             posts.append(Post(
                 slug=slug,
@@ -197,6 +207,7 @@ def load_posts(cat_ids: set[str], include_drafts: bool) -> list[Post]:
                 faq=extract_faq(body),
                 layout=layout,
                 photos=photos,
+                media_ratio=media_ratio,
                 info=info,
             ))
         except Exception as e:  # 한 글이 잘못돼도 나머지는 빌드

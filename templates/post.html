@@ -8,11 +8,11 @@
 <article class="post post-photo">
   <div class="container">
     <nav class="crumbs" aria-label="위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/category/{{ cat.id }}/">{{ cat.title }}</a></nav>
-    <div class="act">
+    <div class="act{% if post.photos and post.media_ratio < 1 %} act-portrait{% endif %}">
       {% set pics = post.photos or [post.image_url or cat.image] %}
-      <div class="act-media{% if not post.photos %} act-auto{% endif %}" data-carousel>
+      <div class="act-media{% if not post.photos %} act-auto{% endif %}" style="aspect-ratio: {{ '%.4f' % (post.media_ratio if post.photos else 1.905) }}" data-carousel>
         <div class="act-track">
-          {% for src in pics %}<figure class="act-slide"><img src="{{ src }}" alt="{{ post.title }} 사진 {{ loop.index }}"{% if not loop.first %} loading="lazy"{% endif %}></figure>{% endfor %}
+          {% for src in pics %}<figure class="act-slide" style="--bg: url('{{ src }}')"><img src="{{ src }}" alt="{{ post.title }} 사진 {{ loop.index }}"{% if not loop.first %} loading="lazy"{% endif %}></figure>{% endfor %}
         </div>
         {% if pics | length > 1 %}
         <button class="act-nav prev" type="button" aria-label="이전 사진"></button>
