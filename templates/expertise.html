@@ -44,17 +44,30 @@
     </ul>
   </div>
 
+  {% if area.track %}
   <div class="ex-row">
-    <h2 class="ex-h">담당 변리사</h2>
-    <div class="ex-team">
-      {% for t in area.team %}
-      <a class="ex-member" href="/authors/{{ t.a.slug }}/">
-        {% if t.a.photo %}<figure class="author-portrait"><img src="{{ t.a.photo }}" alt="{{ t.a.display }} 사진"></figure>{% endif %}
-        <div class="ex-member-id"><strong>{{ t.a.display }}</strong><span>{{ t.a.role }}</span></div>
-        <ul>{% for h in t.picks %}<li>{{ h }}</li>{% endfor %}</ul>
-        <span class="ex-more">변리사 소개{{ m.arrow() }}</span>
-      </a>
-      {% endfor %}
+    <h2 class="ex-h">수행 이력</h2>
+    <div>
+      <p class="ex-note">오킴스 변리사들이 이 분야에서 수행해 온 업무입니다.</p>
+      <ul class="ex-track">{% for h in area.track %}<li>{{ h }}</li>{% endfor %}</ul>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="ex-row">
+    <h2 class="ex-h">오킴스 변리사팀</h2>
+    <div>
+      <p class="ex-note">모든 컨설팅은 다섯 변리사가 한 팀으로 수행합니다. 기업의 기술 분야에 맞춰 주로 맡을 변리사를 정하고, 필요한 분야의 변리사가 함께 참여합니다.</p>
+      <div class="ex-crew">
+        {% for a in authors %}
+        <a class="ex-crew-m" href="/authors/{{ a.slug }}/">
+          {% if a.face %}<img src="{{ a.face }}" alt="{{ a.display }} 사진" width="88" height="88">{% endif %}
+          <strong>{{ a.display }}</strong>
+          <span class="ex-crew-role">{{ a.role }}</span>
+          <span class="ex-crew-tags">{{ a.expertise[:4] | join(' · ') }}</span>
+        </a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 
@@ -80,10 +93,10 @@
     <div class="ex-contact-main">
       <p class="eyebrow">Consultation</p>
       <h2>{{ area.title }} 상담</h2>
-      <p class="ex-contact-desc">담당 변리사가 기술과 사업 단계를 먼저 듣고, 필요한 업무 범위를 함께 정합니다.</p>
+      <p class="ex-contact-desc">기술과 사업 단계를 먼저 듣고, 기술 분야에 맞는 변리사가 필요한 업무 범위를 함께 정합니다.</p>
       <div class="ex-contact-faces">
-        {% for t in area.team %}{% if t.a.face %}<img src="{{ t.a.face }}" alt="{{ t.a.display }}" title="{{ t.a.display }}">{% endif %}{% endfor %}
-        <span>{% for t in area.team %}{{ t.a.display }}{% if not loop.last %} · {% endif %}{% endfor %}</span>
+        {% for a in authors %}{% if a.face %}<img src="{{ a.face }}" alt="{{ a.display }}" title="{{ a.display }}">{% endif %}{% endfor %}
+        <span>오킴스 변리사 {{ authors | length }}명</span>
       </div>
     </div>
     <div class="ex-contact-prep">

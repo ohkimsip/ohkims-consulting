@@ -22,6 +22,11 @@
     </div>
   </div>
 
+  <div class="ex-team-strip">
+    <div class="ex-crew-faces">{% for a in authors %}{% if a.face %}<img src="{{ a.face }}" alt="{{ a.display }}" title="{{ a.display }}">{% endif %}{% endfor %}</div>
+    <p>네 분야 모두 오킴스 변리사 {{ authors | length }}명이 한 팀으로 수행합니다. 기업의 기술 분야에 맞춰 주로 맡을 변리사를 정합니다. <a href="/authors/">변리사 소개{{ m.arrow() }}</a></p>
+  </div>
+
   <div class="ex-areas">
     {% for a in ex.areas %}
     <a class="ex-area" href="/expertise/{{ a.slug }}/">
@@ -32,7 +37,7 @@
         <p class="ex-area-lead">{{ a.lead }}</p>
         <p class="ex-area-svc">{% for s in a.services %}{{ s.t }}{% if not loop.last %} · {% endif %}{% endfor %}</p>
       </div>
-      <div class="ex-area-faces">{% for t in a.team %}{% if t.a.face %}<img src="{{ t.a.face }}" alt="{{ t.a.display }}" title="{{ t.a.display }}">{% endif %}{% endfor %}</div>
+      <span class="ex-area-go">자세히 보기{{ m.arrow() }}</span>
     </a>
     {% endfor %}
   </div>

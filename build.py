@@ -349,6 +349,8 @@ def build(include_drafts: bool) -> int:
                 if a:
                     picks = [h for k in t.get("pick", []) for h in a["highlights"] if k in h]
                     area["team"].append({"a": a, "picks": list(dict.fromkeys(picks))[:3]})
+            # 수행 이력: 이 분야와 관련된 변리사 이력 문구(이름 없이) — 특정 변리사만 담당한다는 인상을 주지 않게(11.13 사용자)
+            area["track"] = list(dict.fromkeys(h for t in area["team"] for h in t["picks"]))[:7]
             kws = area.get("keywords", [])
             score = lambda p: sum(k in (p.title + " " + " ".join(p.tags) + " " + p.summary) for k in kws)
             area["related"] = sorted([p for p in posts if score(p) >= 2], key=lambda p: (-score(p), -p.date.timestamp()))[:3]
@@ -365,7 +367,7 @@ def build(include_drafts: bool) -> int:
             ld = [{"@context": "https://schema.org", "@type": "Service", "name": area["title"],
                    "alternateName": area["en"], "description": area["lead"], "provider": org,
                    "serviceType": [s["t"] for s in area["services"]], "areaServed": "KR", "url": base_url + url,
-                   "employee": [person_ld(t["a"]) for t in area["team"]]},
+                   "employee": [person_ld(a) for a in authors]},
                   {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
                       {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": ans}}
                       for q, ans in area["faq"]]},
