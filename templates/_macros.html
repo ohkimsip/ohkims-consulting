@@ -61,7 +61,7 @@
 <aside class="author-box" aria-label="{{ heading }}">
   <p class="eyebrow">{{ heading }}</p>
   <div class="author-main">
-    <div class="author-mark" aria-hidden="true">{{ a.name[:1] }}</div>
+    {% if a.face %}<img class="author-photo" src="{{ a.face }}" alt="{{ a.display }} 사진" width="72" height="72">{% else %}<div class="author-mark" aria-hidden="true">{{ a.name[:1] }}</div>{% endif %}
     <div class="author-id">
       <p class="author-name"><a href="/authors/{{ a.slug }}/">{{ a.display }}</a></p>
       <p class="author-role">특허법인 오킴스 {{ a.role }}</p>

@@ -15,8 +15,8 @@
     {% for a in authors %}
     <article class="author-card">
       <a href="/authors/{{ a.slug }}/">
+        {% if a.photo %}<figure class="author-portrait"><img src="{{ a.photo }}" alt="{{ a.display }} 사진" loading="lazy"></figure>{% endif %}
         <div class="author-main">
-          <div class="author-mark" aria-hidden="true">{{ a.name[:1] }}</div>
           <div class="author-id">
             <h2 class="author-name">{{ a.display }}</h2>
             <p class="author-role">{{ a.role }}</p>

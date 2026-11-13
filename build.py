@@ -256,7 +256,8 @@ def build(include_drafts: bool) -> int:
     def person_ld(a: dict) -> dict:
         return {"@type": "Person", "name": a["display"], "jobTitle": a["role"], "worksFor": org,
                 "url": f"{base_url}/authors/{a['slug']}/", "sameAs": [a["profile_url"]],
-                "knowsAbout": a["expertise"], "alumniOf": a["education"]}
+                "knowsAbout": a["expertise"], "alumniOf": a["education"],
+                **({"image": base_url + a["photo"]} if a.get("photo") else {})}
 
     for p in posts:
         related = [q for q in by_cat[p.category] if q.slug != p.slug][:3]

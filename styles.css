@@ -410,6 +410,12 @@ a:hover .arrow { transform: translate(2px, -2px); }
   background: var(--brand); color: #fff;
   font-family: var(--serif); font-size: 26.4px;
 }
+.author-photo { flex: none; width: 72px; height: 72px; border-radius: 50%; object-fit: cover; background: #eef2f2; border: 1px solid var(--line); }
+.author-portrait { aspect-ratio: 4 / 5; overflow: hidden; background: #f3f5f5; max-width: 100%; }
+.author-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform .5s ease; }
+.author-card .author-portrait { margin-bottom: 6px; }
+.author-card a:hover .author-portrait img { transform: scale(1.03); }
+.author-all .author-portrait { max-width: 320px; margin-bottom: 26px; }
 .author-name { font-size: 20.9px; font-weight: 700; letter-spacing: -0.03em; }
 .author-name a:hover { color: var(--brand); }
 .author-role { font-size: 13.8px; color: var(--muted); margin-top: 2px; }

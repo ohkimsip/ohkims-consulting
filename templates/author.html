@@ -8,6 +8,7 @@
 <section class="container author-page">
   {{ m.author_box(author, '변리사 소개') }}
   <div class="author-all">
+    {% if author.photo %}<figure class="author-portrait"><img src="{{ author.photo }}" alt="{{ author.display }} 사진"></figure>{% endif %}
     <p class="eyebrow">전체 이력</p>
     <ul class="author-highlights">{% for h in author.highlights %}<li>{{ h }}</li>{% endfor %}</ul>
     <p class="muted author-source">출처: <a href="{{ author.profile_url }}" target="_blank" rel="noopener">특허법인 오킴스 공식 홈페이지 변리사 소개</a></p>
