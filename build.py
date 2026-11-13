@@ -52,6 +52,8 @@ class Post:
     meta: str = ""
     body_html: str = ""
     src_dir: Path | None = None
+    faq: list = field(default_factory=list)  # [(질문, 답)] — 「## 자주 묻는 질문」 아래 ### 질문들
+    author_info: dict | None = None
 
     @property
     def url(self) -> str:
@@ -114,6 +116,19 @@ def plain_excerpt(md_text: str, limit: int = 110) -> str:
     return t if len(t) <= limit else t[:limit].rstrip() + "…"
 
 
+def extract_faq(md_text: str) -> list[tuple[str, str]]:
+    """본문의 「## 자주 묻는 질문」 절에서 ### 질문과 그 아래 문단을 뽑는다(구조화 데이터용)."""
+    m = re.search(r"^##\s*(자주 묻는 질문|FAQ)[^\n]*\n(.*?)(?=^##\s|\Z)", md_text, re.M | re.S)
+    if not m:
+        return []
+    out = []
+    for q, a in re.findall(r"^###\s*(.+?)\n(.*?)(?=^###\s|\Z)", m.group(2), re.M | re.S):
+        a = plain_excerpt(a, 600)
+        if q.strip() and a:
+            out.append((q.strip(), a))
+    return out
+
+
 def load_posts(cat_ids: set[str], include_drafts: bool) -> list[Post]:
     dirs = sorted((CONTENT / "posts").glob("*/index.md"))
     if include_drafts:
@@ -152,6 +167,7 @@ def load_posts(cat_ids: set[str], include_drafts: bool) -> list[Post]:
                 meta=meta.get("meta", ""),
                 body_html=md.convert(body),
                 src_dir=f.parent,
+                faq=extract_faq(body),
             ))
         except Exception as e:  # 한 글이 잘못돼도 나머지는 빌드
             errors.append(f"  - {f.relative_to(ROOT)}: {e}")
@@ -177,6 +193,15 @@ def build(include_drafts: bool) -> int:
     posts = load_posts(set(cats), include_drafts)
     by_cat = {cid: [p for p in posts if p.category == cid] for cid in cats}
 
+    authors_path = CONTENT / "authors.json"
+    authors = json.loads(authors_path.read_text(encoding="utf-8"))["authors"] if authors_path.is_file() else []
+    by_name = {}
+    for a in authors:
+        by_name[a["display"]] = by_name[a["name"]] = a
+    for p in posts:
+        p.author_info = by_name.get(p.author) or by_name.get(re.sub(r"\s*변리사$", "", p.author or ""))
+    by_author = {a["slug"]: [p for p in posts if p.author_info is a] for a in authors}
+
     env = Environment(
         loader=FileSystemLoader(ROOT / "templates"),
         autoescape=select_autoescape(["html"]),
@@ -184,7 +209,9 @@ def build(include_drafts: bool) -> int:
         lstrip_blocks=True,
     )
     env.filters["lines"] = lambda arr: "<br>".join(arr)
-    common = dict(site=site, cats=cats, by_cat=by_cat, now=datetime.now())
+    env.filters["tojson_ld"] = lambda obj: json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
+    common = dict(site=site, cats=cats, by_cat=by_cat, authors=authors, by_author=by_author,
+                  now=datetime.now())
 
     clean_dir(OUT)
 
@@ -201,15 +228,46 @@ def build(include_drafts: bool) -> int:
               page_title=f"{cat['title']} | {site['site']['name']}",
               page_desc=cat["desc"], canonical=f"/category/{cid}/")
 
+    base_url = site["site"]["url"].rstrip("/")
+    org = {"@type": "Organization", "name": "특허법인 오킴스", "alternateName": "OhKims Patent Law Firm",
+           "url": "https://www.ohkimsip.com/"}
+
+    def person_ld(a: dict) -> dict:
+        return {"@type": "Person", "name": a["display"], "jobTitle": a["role"], "worksFor": org,
+                "url": f"{base_url}/authors/{a['slug']}/", "sameAs": [a["profile_url"]],
+                "knowsAbout": a["expertise"], "alumniOf": a["education"]}
+
     for p in posts:
         related = [q for q in by_cat[p.category] if q.slug != p.slug][:3]
+        ld = [{"@context": "https://schema.org", "@type": "Article", "headline": p.title,
+               "description": p.summary, "datePublished": p.iso, "inLanguage": "ko",
+               "mainEntityOfPage": base_url + p.url, "publisher": org,
+               "image": base_url + (p.cover_url or cats[p.category]["image"]),
+               "author": person_ld(p.author_info) if p.author_info else org,
+               "keywords": p.tags}]
+        if p.faq:
+            ld.append({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+                {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in p.faq]})
         write(f"posts/{p.slug}/index.html", "post.html", post=p, cat=cats[p.category],
               related=related, page_title=f"{p.title} | {site['site']['name']}",
-              page_desc=p.summary, canonical=p.url,
+              page_desc=p.summary, canonical=p.url, json_ld=ld,
               og_image=p.cover_url or cats[p.category]["image"])
         for extra in p.src_dir.iterdir():  # 글 폴더의 사진 등
             if extra.name != "index.md" and extra.is_file():
                 shutil.copy2(extra, OUT / "posts" / p.slug / extra.name)
+
+    # 변리사 소개
+    if authors:
+        write("authors/index.html", "authors.html", page_title=f"변리사 소개 | {site['site']['name']}",
+              page_desc="특허법인 오킴스 IP·기술사업화 컨설팅 변리사 소개", canonical="/authors/",
+              active_nav="/authors/",
+              json_ld=[{"@context": "https://schema.org", **person_ld(a)} for a in authors])
+        for a in authors:
+            write(f"authors/{a['slug']}/index.html", "author.html", author=a, items=by_author[a["slug"]],
+                  page_title=f"{a['display']} | {site['site']['name']}",
+                  page_desc=f"{a['display']} — {a['tagline']}", canonical=f"/authors/{a['slug']}/",
+                  active_nav="/authors/", json_ld=[{"@context": "https://schema.org", "@type": "ProfilePage",
+                                                    "mainEntity": person_ld(a)}])
 
     # 검색용 목록, sitemap, robots
     (OUT / "search.json").write_text(json.dumps([
@@ -217,6 +275,8 @@ def build(include_drafts: bool) -> int:
          "d": p.date_label, "u": p.url} for p in posts], ensure_ascii=False), encoding="utf-8")
     base = site["site"]["url"].rstrip("/")
     urls = ["/"] + [f"/category/{c}/" for c in cats] + [p.url for p in posts]
+    if authors:
+        urls += ["/authors/"] + [f"/authors/{a['slug']}/" for a in authors]
     (OUT / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "".join(f"  <url><loc>{html.escape(base + u)}</loc></url>\n" for u in urls)

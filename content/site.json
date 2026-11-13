@@ -88,6 +88,7 @@
     { "label": "기술 동향", "href": "/category/tech-insights/" },
     { "label": "매거진", "href": "/category/magazine/" },
     { "divider": true },
+    { "label": "변리사", "href": "/authors/" },
     { "label": "컨설팅 분야", "href": "/#expertise" },
     { "label": "About OhKims", "href": "/#about", "external": true }
   ],

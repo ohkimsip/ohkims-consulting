@@ -11,7 +11,7 @@
     <h1>{{ post.title }}</h1>
     <p class="post-summary">{{ post.summary }}</p>
     <p class="post-meta">
-      {% if post.author %}<span>{{ post.author }}</span>{% endif %}
+      {% if post.author_info %}<a href="/authors/{{ post.author_info.slug }}/">{{ post.author }}</a>{% elif post.author %}<span>{{ post.author }}</span>{% endif %}
       <time datetime="{{ post.iso }}">{{ post.date_label }}</time>
       {% if post.meta %}<span>{{ post.meta }}</span>{% endif %}
     </p>
@@ -25,6 +25,7 @@
     <div class="post-body">
       {{ post.body_html | safe }}
     </div>
+    {% if post.author_info %}{{ m.author_box(post.author_info) }}{% endif %}
   </div>
 
   <footer class="container post-foot">

@@ -56,6 +56,27 @@
 </article>
 {% endmacro %}
 
+{# 글 하단 필자 소개(기사 말미 형식) #}
+{% macro author_box(a, heading='필자 소개') %}
+<aside class="author-box" aria-label="{{ heading }}">
+  <p class="eyebrow">{{ heading }}</p>
+  <div class="author-main">
+    <div class="author-mark" aria-hidden="true">{{ a.name[:1] }}</div>
+    <div class="author-id">
+      <p class="author-name"><a href="/authors/{{ a.slug }}/">{{ a.display }}</a></p>
+      <p class="author-role">특허법인 오킴스 {{ a.role }}</p>
+      <p class="author-tagline">{{ a.tagline }}</p>
+    </div>
+  </div>
+  <dl class="author-facts">
+    <div><dt>전문 분야</dt><dd>{{ a.expertise | join(' · ') }}</dd></div>
+    <div><dt>학력·자격</dt><dd>{{ a.education }} · {{ a.credentials | join(' · ') }}</dd></div>
+    <div><dt>주요 이력</dt><dd><ul>{% for h in a.highlights[:4] %}<li>{{ h }}</li>{% endfor %}</ul></dd></div>
+  </dl>
+  <p class="author-links"><a href="mailto:{{ a.email }}">{{ a.email }}</a><a href="/authors/{{ a.slug }}/">변리사 소개 보기{{ arrow() }}</a></p>
+</aside>
+{% endmacro %}
+
 {# 매거진 글 줄(사진 없이 글 중심) #}
 {% macro mag_item(p) %}
 <article class="mag-item">

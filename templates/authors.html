@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block body_class %}page-authors{% endblock %}
+{% block main %}
+<section class="container page-head">
+  <nav class="crumbs" aria-label="위치"><a href="/">홈</a><span aria-hidden="true">/</span><span>변리사 소개</span></nav>
+  <div class="page-title">
+    <h1>변리사 소개</h1>
+    <span class="en">Our attorneys</span>
+  </div>
+  <p class="page-desc">기술 분야별 전문 변리사가 출원 전략부터 분쟁, 기술사업화까지 함께합니다.</p>
+</section>
+<section class="container page-body">
+  <div class="author-grid">
+    {% for a in authors %}
+    <article class="author-card">
+      <a href="/authors/{{ a.slug }}/">
+        <div class="author-main">
+          <div class="author-mark" aria-hidden="true">{{ a.name[:1] }}</div>
+          <div class="author-id">
+            <h2 class="author-name">{{ a.display }}</h2>
+            <p class="author-role">{{ a.role }}</p>
+          </div>
+        </div>
+        <p class="author-tagline">{{ a.tagline }}</p>
+        <p class="author-tags">{{ a.expertise | join(' · ') }}</p>
+        <p class="author-count">글 {{ by_author[a.slug] | length }}편{{ m.arrow() }}</p>
+      </a>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

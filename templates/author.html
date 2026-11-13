@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block body_class %}page-author{% endblock %}
+{% block main %}
+<section class="container page-head">
+  <nav class="crumbs" aria-label="위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/authors/">변리사 소개</a><span aria-hidden="true">/</span><span>{{ author.display }}</span></nav>
+</section>
+<section class="container author-page">
+  {{ m.author_box(author, '변리사 소개') }}
+  <div class="author-all">
+    <p class="eyebrow">전체 이력</p>
+    <ul class="author-highlights">{% for h in author.highlights %}<li>{{ h }}</li>{% endfor %}</ul>
+    <p class="muted author-source">출처: <a href="{{ author.profile_url }}" target="_blank" rel="noopener">특허법인 오킴스 공식 홈페이지 변리사 소개</a></p>
+  </div>
+</section>
+<section class="container page-body">
+  <h2 class="related-title">{{ author.display }}의 글</h2>
+  {% if items %}
+  <div class="mag-grid">{% for p in items %}{{ m.mag_item(p) }}{% endfor %}</div>
+  {% else %}
+  <div class="empty-state"><p class="muted">아직 올라온 글이 없습니다.</p></div>
+  {% endif %}
+</section>
+{% endblock %}
