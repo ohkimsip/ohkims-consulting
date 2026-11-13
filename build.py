@@ -34,6 +34,7 @@ from pathlib import Path
 import markdown
 
 import covers
+import seo
 import diagrams
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -274,17 +275,23 @@ def build(include_drafts: bool) -> int:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(env.get_template(tpl).render(**common, **ctx), encoding="utf-8")
 
+    base_url = site["site"]["url"].rstrip("/")
+    org = {"@type": "LegalService", "@id": base_url + "/#org", "name": "특허법인 오킴스",
+           "alternateName": "OhKims Patent Law Firm", "url": base_url + "/",
+           "logo": base_url + "/assets/logo.png", "sameAs": ["https://www.ohkimsip.com/"]}
+
     write("index.html", "home.html", page_title=site["site"]["name"],
-          page_desc=site["site"]["description"], canonical="/")
+          page_desc=site["site"]["description"], canonical="/",
+          json_ld=[seo.org_ld(base_url, site), seo.website_ld(base_url, site)])
 
     for cid, cat in cats.items():
         write(f"category/{cid}/index.html", "category.html", cat=cat, items=by_cat[cid],
               page_title=f"{cat['title']} | {site['site']['name']}",
-              page_desc=cat["desc"], canonical=f"/category/{cid}/")
-
-    base_url = site["site"]["url"].rstrip("/")
-    org = {"@type": "Organization", "name": "특허법인 오킴스", "alternateName": "OhKims Patent Law Firm",
-           "url": "https://www.ohkimsip.com/"}
+              page_desc=cat["desc"], canonical=f"/category/{cid}/",
+              json_ld=[{"@context": "https://schema.org", "@type": "CollectionPage", "name": cat["title"],
+                        "description": cat["desc"], "url": f"{base_url}/category/{cid}/", "inLanguage": "ko",
+                        "isPartOf": {"@id": base_url + "/#site"}},
+                       seo.crumbs_ld(base_url, [("홈", "/"), (cat["title"], f"/category/{cid}/")])])
 
     def person_ld(a: dict) -> dict:
         return {"@type": "Person", "name": a["display"], "jobTitle": a["role"], "worksFor": org,
@@ -295,7 +302,8 @@ def build(include_drafts: bool) -> int:
     for p in posts:
         related = [q for q in by_cat[p.category] if q.slug != p.slug][:3]
         ld = [{"@context": "https://schema.org", "@type": "Article", "headline": p.title,
-               "description": p.summary, "datePublished": p.iso, "inLanguage": "ko",
+               "description": p.summary, "datePublished": p.iso, "dateModified": p.iso, "inLanguage": "ko",
+               "articleSection": cats[p.category]["title"],
                "mainEntityOfPage": base_url + p.url, "publisher": org,
                "image": base_url + (p.image_url or cats[p.category]["image"]),
                "author": person_ld(p.author_info) if p.author_info else org,
@@ -303,9 +311,12 @@ def build(include_drafts: bool) -> int:
         if p.faq:
             ld.append({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
                 {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in p.faq]})
+        ld.append(seo.crumbs_ld(base_url, [("홈", "/"), (cats[p.category]["title"], f"/category/{p.category}/"),
+                                           (p.title, p.url)]))
         write(f"posts/{p.slug}/index.html", "post.html", post=p, cat=cats[p.category],
               related=related, page_title=f"{p.title} | {site['site']['name']}",
               page_desc=p.summary, canonical=p.url, json_ld=ld,
+              page_author=p.author or "특허법인 오킴스", page_keywords=", ".join(p.tags) or None,
               og_image=p.image_url or cats[p.category]["image"])
         for extra in p.src_dir.iterdir():  # 글 폴더의 사진 등
             if extra.name != "index.md" and extra.is_file():
@@ -327,6 +338,7 @@ def build(include_drafts: bool) -> int:
     # 컨설팅 분야(공식 홈페이지 업무분야 + 변리사 공개 이력)
     ex_path = CONTENT / "expertise.json"
     ex_urls = []
+    ex = None
     if ex_path.is_file():
         ex = json.loads(ex_path.read_text(encoding="utf-8"))
         by_slug_a = {a["slug"]: a for a in authors}
@@ -367,18 +379,21 @@ def build(include_drafts: bool) -> int:
     (OUT / "search.json").write_text(json.dumps([
         {"t": p.title, "s": p.summary, "g": " ".join(p.tags), "c": cats[p.category]["title"],
          "d": p.date_label, "u": p.url} for p in posts], ensure_ascii=False), encoding="utf-8")
-    base = site["site"]["url"].rstrip("/")
-    urls = ["/"] + [f"/category/{c}/" for c in cats] + [p.url for p in posts]
+    base = base_url
+    newest = posts[0].iso if posts else ""
+    entries = [("/", newest)] + [(f"/category/{c}/", by_cat[c][0].iso if by_cat[c] else "") for c in cats]
+    entries += [(p.url, p.iso) for p in posts]
     if authors:
-        urls += ["/authors/"] + [f"/authors/{a['slug']}/" for a in authors]
-    urls += ex_urls
-    (OUT / "sitemap.xml").write_text(
-        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        + "".join(f"  <url><loc>{html.escape(base + u)}</loc></url>\n" for u in urls)
-        + "</urlset>\n", encoding="utf-8")
-    robots = "User-agent: *\nDisallow: /\n" if site["site"].get("noindex") else \
-        f"User-agent: *\nAllow: /\nSitemap: {base}/sitemap.xml\n"
-    (OUT / "robots.txt").write_text(robots, encoding="utf-8")
+        entries += [("/authors/", "")] + [(f"/authors/{a['slug']}/", by_author[a["slug"]][0].iso if by_author[a["slug"]] else "")
+                                          for a in authors]
+    entries += [(u, "") for u in ex_urls]
+    (OUT / "sitemap.xml").write_text(seo.sitemap_xml(base, entries), encoding="utf-8")
+    (OUT / "robots.txt").write_text(seo.robots_txt(base, bool(site["site"].get("noindex"))), encoding="utf-8")
+    (OUT / "rss.xml").write_text(seo.rss_xml(base, site["site"]["name"], site["site"]["description"], posts, cats),
+                                 encoding="utf-8")
+    (OUT / "llms.txt").write_text(seo.llms_txt(base, site, posts, cats, authors, ex), encoding="utf-8")
+    write("404.html", "404.html", page_title=f"페이지를 찾을 수 없습니다 | {site['site']['name']}",
+          page_desc="요청하신 페이지를 찾을 수 없습니다.", canonical="/404.html")
 
     shutil.copytree(ROOT / "assets", OUT / "assets", dirs_exist_ok=True)
     for name in STATIC:

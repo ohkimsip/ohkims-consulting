@@ -58,7 +58,7 @@
   </header>
 
   {% if post.cover %}
-  <figure class="container post-cover"><img src="{{ post.cover_url }}" alt=""></figure>
+  <figure class="container post-cover"><img src="{{ post.cover_url }}" alt="{{ post.title }}"></figure>
   {% endif %}
 
   <div class="container post-col">
