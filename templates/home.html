@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block body_class %}page-home{% endblock %}
+{% block main %}
+{% set h = site.hero %}
+<section class="container hero">
+  <div class="hero-inner">
+    <p class="eyebrow light"><span class="dot"></span>{{ h.eyebrow }}</p>
+    <h1>{{ h.titleLines | lines | safe }}</h1>
+    <p class="hero-desc">{{ h.desc | lines | safe }}</p>
+    <a class="link-line light" href="{{ h.cta.href }}">{{ h.cta.label }}{{ m.arrow() }}</a>
+    <div class="hero-quote">
+      <p>{{ h.quote | lines | safe }}</p>
+      <a class="circle-arrow" href="{{ h.cta.href }}" aria-label="{{ h.cta.label }}">{{ m.arrow() }}</a>
+    </div>
+    <div class="hero-foot"><span>{{ h.footLeft }}</span><span>{{ h.footRight }}</span></div>
+  </div>
+</section>
+
+{% set ps = site.perspective %}
+<section class="container perspective" id="perspective">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">{{ ps.eyebrow }}</p>
+      <h2>{{ ps.title | safe }}</h2>
+    </div>
+    <p class="section-aside">{{ ps.aside | lines | safe }}</p>
+  </div>
+  <div class="columns">
+    {% for cid in ps.columns %}
+    {% set cat = cats[cid] %}
+    {% set items = by_cat[cid] %}
+    <article class="column" id="{{ cid }}">
+      {{ m.column_head(cat) }}
+      {% if items %}
+        {{ m.feature_card(items[0], cat) }}
+        {% if items | length > 1 %}
+        <ul class="post-list">
+          {% for p in items[1:3] %}{{ m.list_item(p.url, p.tags | join(' · ') if p.tags else p.date_label, p.title) }}{% endfor %}
+        </ul>
+        {% endif %}
+      {% else %}
+        {{ m.placeholder_card(cat.placeholder.feature, cat) }}
+        <ul class="post-list">
+          {% for it in cat.placeholder.list %}{{ m.list_item('/category/' ~ cid ~ '/', it.tag, it.title) }}{% endfor %}
+        </ul>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+{% set mg = site.magazine %}
+{% set mags = by_cat['magazine'] %}
+<section class="magazine-wrap" id="magazine">
+  <div class="container magazine-home">
+    <div class="magazine-intro">
+      <p class="eyebrow">{{ mg.eyebrow }}</p>
+      <h2>{{ mg.titleLines | lines | safe }}</h2>
+      <p class="muted">{{ mg.desc | lines | safe }}</p>
+      <a class="link-line" href="{{ mg.cta.href }}">{{ mg.cta.label }}{{ m.arrow() }}</a>
+    </div>
+    <div class="magazine-list">
+      {% for p in mags[:3] %}{{ m.mag_item(p) }}
+      {% else %}
+      <p class="empty-note">{{ mg.empty }}</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% set e = site.expertise %}
+<section class="expertise-wrap" id="expertise">
+  <div class="container expertise">
+    <div class="expertise-intro">
+      <p class="eyebrow">{{ e.eyebrow }}</p>
+      <h2>{{ e.titleLines | lines | safe }}</h2>
+      <p class="muted">{{ e.desc | lines | safe }}</p>
+      <a class="link-line" href="{{ e.cta.href }}">{{ e.cta.label }}{{ m.arrow() }}</a>
+    </div>
+    <ol class="expertise-list">
+      {% for it in e['items'] %}
+      <li><a href="{{ it.href }}"><span class="no">{{ it.no }}</span><span class="body"><strong>{{ it.title }}</strong><span>{{ it.desc }}</span></span>{{ m.arrow() }}</a></li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+{% set pt = site.partner %}
+{% set ct = site.contact %}
+<section class="container partner" id="about">
+  <div class="partner-words">
+    <p class="eyebrow">{{ pt.eyebrow }}</p>
+    <p class="serif-words">{% for w in pt.words %}<span class="w{{ loop.index }}">{{ w }}</span>{% endfor %}</p>
+  </div>
+  <div class="partner-text">
+    <h2>{{ pt.titleLines | lines | safe }}</h2>
+    <p class="muted">{{ pt.desc | lines | safe }}</p>
+    <a class="link-line" href="{{ pt.cta.href }}" target="_blank" rel="noopener">{{ pt.cta.label }}{{ m.arrow() }}</a>
+  </div>
+  <div class="contact-box" id="contact">
+    <p class="eyebrow light">{{ ct.eyebrow }}</p>
+    <h2>{{ ct.titleLines | lines | safe }}</h2>
+    <a class="contact-link" href="{{ ct.linkHref }}">{{ ct.linkLabel }}{{ m.arrow() }}</a>
+    <a class="contact-phone" href="{{ ct.tel }}">{{ ct.phone }}</a>
+  </div>
+</section>
+{% endblock %}

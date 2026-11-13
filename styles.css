@@ -249,8 +249,119 @@ a:hover .arrow { transform: translate(2px, -2px); }
 .footer-bottom address span + span::before { content: "|"; margin: 0 12px; color: #cfd5d6; }
 .copy { text-align: right; font-size: 10.5px; }
 
+/* ---------- 검색 ---------- */
+.search-panel { padding-bottom: 18px; }
+.search-label { display: block; font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--brand); margin-bottom: 8px; }
+.search-input {
+  width: 100%; font: inherit; font-size: 16px; color: var(--ink);
+  border: 0; border-bottom: 1.5px solid var(--ink); padding: 10px 2px; background: transparent;
+}
+.search-input:focus { outline: none; border-color: var(--brand); }
+.search-results li { border-bottom: 1px solid var(--line); }
+.search-results a { display: flex; flex-direction: column; gap: 2px; padding: 12px 2px; }
+.search-results a:hover .sr-title { color: var(--brand); }
+.sr-cat { font-size: 11px; color: var(--muted); }
+.sr-title { font-size: 14.5px; font-weight: 600; }
+.sr-none { padding: 14px 2px; font-size: 13px; color: var(--muted); }
+.gnb a[aria-current="page"]::after { transform: scaleX(1); }
+.gnb a[aria-current="page"] { color: var(--ink); }
+
+/* ---------- 메인: 매거진 ---------- */
+.magazine-wrap { border-top: 1px solid var(--line); }
+.magazine-home { display: grid; grid-template-columns: 1fr 1.6fr; gap: 60px; padding-top: 70px; padding-bottom: 76px; }
+.magazine-intro h2 { margin-top: 22px; font-size: clamp(26px, 2.5vw, 33px); font-weight: 700; line-height: 1.5; letter-spacing: -0.035em; }
+.magazine-intro .muted { margin-top: 22px; font-size: 13px; line-height: 1.95; }
+.magazine-intro .link-line { margin-top: 40px; }
+.magazine-list { border-top: 2px solid var(--line-strong); }
+.magazine-list .mag-item { border-bottom: 1px solid var(--line); }
+.empty-note { padding: 30px 0; font-size: 14px; color: var(--muted); }
+
+/* 매거진 글 줄 */
+.mag-item a { display: grid; gap: 8px; padding: 26px 0 28px; }
+.mag-kicker { display: flex; gap: 14px; align-items: baseline; font-size: 11px; color: var(--faint); }
+.mag-item h3 { font-size: 20px; font-weight: 700; line-height: 1.45; letter-spacing: -0.035em; text-wrap: balance; }
+.mag-summary { font-size: 13px; line-height: 1.8; color: var(--muted); max-width: 62ch; }
+.mag-author { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--serif-deep); }
+.mag-author::before { content: "— "; }
+.mag-item a:hover h3 { color: var(--brand); }
+
+/* ---------- 분류 목록 페이지 ---------- */
+.page-head { padding-top: 46px; padding-bottom: 8px; }
+.crumbs { display: flex; gap: 8px; font-size: 12px; color: var(--muted); }
+.crumbs a:hover { color: var(--ink); }
+.page-title { margin-top: 26px; display: flex; align-items: baseline; gap: 14px; border-top: 2px solid var(--line-strong); padding-top: 22px; }
+.page-title .no { font-size: 13px; color: var(--muted); }
+.page-title h1 { font-size: clamp(28px, 3vw, 38px); font-weight: 700; letter-spacing: -0.04em; }
+.page-title .en { font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--faint); }
+.page-desc { margin-top: 12px; font-size: 14px; color: var(--muted); }
+.cat-tabs { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 8px; }
+.cat-tabs a {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid #cfd6d7; padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--ink-2);
+}
+.cat-tabs a:hover { border-color: var(--ink); }
+.cat-tabs a[aria-current="page"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+.cat-tabs .count { font-size: 11px; opacity: .7; font-variant-numeric: tabular-nums; }
+.page-body { padding-top: 40px; padding-bottom: 90px; }
+
+.card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 44px 34px; }
+.grid-card a { display: block; }
+.grid-card h3 { margin-top: 10px; font-size: 19px; font-weight: 700; line-height: 1.45; letter-spacing: -0.035em; text-wrap: balance; }
+.grid-card p { margin-top: 10px; font-size: 13px; line-height: 1.75; color: var(--muted); }
+.grid-card a:hover img { transform: scale(1.04); }
+.grid-card a:hover h3 { color: var(--brand); }
+.grid-card .thumb::after { display: none; }
+
+.mag-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 48px; }
+.mag-grid .mag-item { border-top: 2px solid var(--line-strong); }
+.mag-grid .mag-item a { padding: 24px 0 40px; }
+
+.empty-state { border-top: 1px solid var(--line); padding: 56px 0; display: grid; gap: 12px; justify-items: start; }
+.empty-title { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; }
+.empty-state .link-line { margin-top: 18px; }
+
+/* ---------- 글 상세 ---------- */
+.post-head { padding-top: 46px; max-width: calc(820px + var(--gutter) * 2); }
+.post-tags { margin-top: 30px; font-size: 12px; font-weight: 600; color: var(--brand); }
+.post-head h1 { margin-top: 12px; font-size: clamp(28px, 3.4vw, 42px); font-weight: 700; line-height: 1.35; letter-spacing: -0.045em; text-wrap: balance; }
+.post-summary { margin-top: 18px; font-size: 17px; line-height: 1.75; color: var(--ink-2); max-width: 60ch; }
+.post-meta { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); }
+.post-meta span:first-child { color: var(--ink); font-weight: 600; }
+.post-cover { margin-top: 36px; max-width: calc(1040px + var(--gutter) * 2); }
+.post-cover img { width: 100%; max-height: 520px; object-fit: cover; }
+
+.post-col { max-width: calc(820px + var(--gutter) * 2); }
+.post-body { max-width: 720px; margin-top: 44px; font-size: 16.5px; line-height: 1.95; color: var(--ink); word-break: keep-all; overflow-wrap: anywhere; }
+.post-body > * + * { margin-top: 1.15em; }
+.post-body h2 { margin-top: 2.2em; font-size: 24px; line-height: 1.45; font-weight: 700; letter-spacing: -0.035em; padding-top: 18px; border-top: 1px solid var(--line); }
+.post-body h3 { margin-top: 1.8em; font-size: 19px; font-weight: 700; letter-spacing: -0.03em; }
+.post-body ul, .post-body ol { padding-left: 1.3em; }
+.post-body ul { list-style: disc; }
+.post-body ol { list-style: decimal; }
+.post-body li + li { margin-top: .35em; }
+.post-body a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+.post-body strong { font-weight: 700; }
+.post-body blockquote { border-left: 3px solid var(--brand); padding: 4px 0 4px 20px; color: var(--ink-2); font-size: 16px; }
+.post-body img { width: 100%; height: auto; margin-top: 1.6em; }
+.post-body table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.6; }
+.post-body th, .post-body td { border-bottom: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; }
+.post-body th { background: var(--soft-bg); font-weight: 600; white-space: nowrap; }
+.post-body hr { border: 0; border-top: 1px solid var(--line); margin: 2.4em 0; }
+.post-body code { font-size: .92em; background: var(--soft-bg); padding: 1px 5px; }
+
+.post-foot { max-width: calc(820px + var(--gutter) * 2); padding-top: 56px; padding-bottom: 30px; display: grid; gap: 28px; justify-items: start; }
+.post-cta { width: 100%; background: var(--soft-bg); padding: 26px 28px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.post-cta-title { margin-top: 10px; font-size: 19px; font-weight: 700; letter-spacing: -0.03em; }
+.post-cta .muted { margin-top: 6px; font-size: 13px; }
+.btn-solid { display: inline-flex; align-items: center; gap: 24px; background: var(--brand); color: #fff; padding: 14px 22px; font-size: 13.5px; font-weight: 600; }
+.btn-solid:hover { background: var(--brand-deep); }
+.related { padding-top: 40px; padding-bottom: 90px; border-top: 1px solid var(--line); margin-top: 40px; }
+.related-title { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 26px; }
+
 /* ---------- 태블릿 ---------- */
 @media (max-width: 1080px) {
+  .magazine-home { grid-template-columns: 1fr; gap: 36px; }
+  .card-grid { grid-template-columns: 1fr 1fr; }
   .gnb { gap: 34px; }
   .columns { grid-template-columns: 1fr 1fr; }
   .columns .column:last-child { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; column-gap: 34px; }
@@ -307,4 +418,19 @@ a:hover .arrow { transform: translate(2px, -2px); }
   .copy { text-align: left; }
   .footer-bottom address span { display: block; }
   .footer-bottom address span + span::before { display: none; }
+
+  .magazine-home { padding-top: 52px; padding-bottom: 52px; }
+  .card-grid, .mag-grid { grid-template-columns: 1fr; }
+  .page-head { padding-top: 28px; }
+  .page-title { flex-wrap: wrap; gap: 6px 12px; }
+  .post-head { padding-top: 28px; }
+  .post-summary { font-size: 15.5px; }
+  .post-body { font-size: 15.5px; line-height: 1.9; margin-top: 32px; }
+  .post-body h2 { font-size: 21px; }
+  .post-body table { display: block; overflow-x: auto; }
+  .post-cta { padding: 22px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
 }

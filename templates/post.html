@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% set active_nav = '/category/' ~ cat.id ~ '/' %}
+{% block og_type %}article{% endblock %}
+{% block body_class %}page-post cat-{{ cat.id }}{% endblock %}
+{% block main %}
+<article class="post">
+  <header class="container post-head">
+    <nav class="crumbs" aria-label="위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/category/{{ cat.id }}/">{{ cat.title }}</a></nav>
+    {% if post.tags %}<p class="post-tags">{{ post.tags | join(' · ') }}</p>{% endif %}
+    <h1>{{ post.title }}</h1>
+    <p class="post-summary">{{ post.summary }}</p>
+    <p class="post-meta">
+      {% if post.author %}<span>{{ post.author }}</span>{% endif %}
+      <time datetime="{{ post.iso }}">{{ post.date_label }}</time>
+      {% if post.meta %}<span>{{ post.meta }}</span>{% endif %}
+    </p>
+  </header>
+
+  {% if post.cover %}
+  <figure class="container post-cover"><img src="{{ post.cover_url }}" alt=""></figure>
+  {% endif %}
+
+  <div class="container post-col">
+    <div class="post-body">
+      {{ post.body_html | safe }}
+    </div>
+  </div>
+
+  <footer class="container post-foot">
+    <div class="post-cta">
+      <div>
+        <p class="eyebrow">{{ site.contact.eyebrow }}</p>
+        <p class="post-cta-title">이 주제로 상담이 필요하신가요?</p>
+        <p class="muted">특허법인 오킴스 {{ site.contact.phone }} · ip@ohkimslaw.com</p>
+      </div>
+      <a class="btn-solid" href="/#contact">상담 문의{{ m.arrow() }}</a>
+    </div>
+    <a class="link-line back-link" href="/category/{{ cat.id }}/">{{ cat.title }} 목록으로{{ m.arrow() }}</a>
+  </footer>
+</article>
+
+{% if related %}
+<section class="container related">
+  <h2 class="related-title">{{ cat.title }}의 다른 글</h2>
+  {% if cat.id == 'magazine' %}
+  <div class="mag-grid">{% for p in related %}{{ m.mag_item(p) }}{% endfor %}</div>
+  {% else %}
+  <div class="card-grid">{% for p in related %}{{ m.grid_card(p, cat) }}{% endfor %}</div>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% set active_nav = '/category/' ~ cat.id ~ '/' %}
+{% block body_class %}page-category cat-{{ cat.id }}{% endblock %}
+{% block main %}
+<section class="container page-head">
+  <nav class="crumbs" aria-label="위치"><a href="/">홈</a><span aria-hidden="true">/</span><span>{{ cat.title }}</span></nav>
+  <div class="page-title">
+    <span class="no">{{ cat.no }}</span>
+    <h1>{{ cat.title }}</h1>
+    <span class="en">{{ cat.en }}</span>
+  </div>
+  <p class="page-desc">{{ cat.desc }}</p>
+  <nav class="cat-tabs" aria-label="분류">
+    {% for c in cats.values() %}
+    <a href="/category/{{ c.id }}/"{% if c.id == cat.id %} aria-current="page"{% endif %}>{{ c.title }} <span class="count">{{ by_cat[c.id] | length }}</span></a>
+    {% endfor %}
+  </nav>
+</section>
+
+<section class="container page-body">
+  {% if not items %}
+  <div class="empty-state">
+    <p class="empty-title">아직 올라온 글이 없습니다.</p>
+    <p class="muted">새 글이 게시되면 이곳에 가장 먼저 보입니다.</p>
+    <a class="link-line" href="/">홈으로{{ m.arrow() }}</a>
+  </div>
+  {% elif cat.id == 'magazine' %}
+  <div class="mag-grid">
+    {% for p in items %}{{ m.mag_item(p) }}{% endfor %}
+  </div>
+  {% else %}
+  <div class="card-grid">
+    {% for p in items %}{{ m.grid_card(p, cat) }}{% endfor %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
