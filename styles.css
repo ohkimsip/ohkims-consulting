@@ -523,3 +523,11 @@ a:hover .arrow { transform: translate(2px, -2px); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ---------- 넓은 모니터: 디자인 비율 그대로 전체 확대 ----------
+   기준 디자인은 1,415px 화면. 27인치 FHD(1920×1080, 크롬) = 1.2배, QHD 이상은 더 키운다.
+   zoom은 글자·간격·이미지를 함께 키워 시안의 여백 비율을 지킨다(미디어 쿼리 기준 폭은 그대로). */
+@media (min-width: 1600px) { body { zoom: 1.1; } }
+@media (min-width: 1800px) { body { zoom: 1.2; } }
+@media (min-width: 2300px) { body { zoom: 1.4; } }
+@media (min-width: 3000px) { body { zoom: 1.8; } }
