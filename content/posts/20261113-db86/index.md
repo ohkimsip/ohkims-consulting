@@ -2,7 +2,7 @@
 title: 사피엔스, '비오라'로 CES 2027 혁신상 2개 부문 선정
 category: client-stories
 date: 2026-11-13
-author: 김종승 변리사
+author: 박시형 변리사
 tags: 사피엔스, AI 스마트 글래스, 온디바이스 AI, CES 2027
 summary: 사피엔스가 개발 중인 AI 스마트 글래스 '비오라'가 온디바이스 AI와 전력 절감 기술을 바탕으로 CES 2027 혁신상 인공지능·인간 안보 2개 부문에 선정됐습니다.
 ---
