@@ -9,15 +9,16 @@
   <div class="container">
     <nav class="crumbs" aria-label="위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/category/{{ cat.id }}/">{{ cat.title }}</a></nav>
     <div class="act">
-      <div class="act-media" data-carousel>
+      {% set pics = post.photos or [post.image_url or cat.image] %}
+      <div class="act-media{% if not post.photos %} act-auto{% endif %}" data-carousel>
         <div class="act-track">
-          {% for src in post.photos %}<figure class="act-slide"><img src="{{ src }}" alt="{{ post.title }} 사진 {{ loop.index }}"{% if not loop.first %} loading="lazy"{% endif %}></figure>{% endfor %}
+          {% for src in pics %}<figure class="act-slide"><img src="{{ src }}" alt="{{ post.title }} 사진 {{ loop.index }}"{% if not loop.first %} loading="lazy"{% endif %}></figure>{% endfor %}
         </div>
-        {% if post.photos | length > 1 %}
+        {% if pics | length > 1 %}
         <button class="act-nav prev" type="button" aria-label="이전 사진"></button>
         <button class="act-nav next" type="button" aria-label="다음 사진"></button>
-        <div class="act-dots" aria-hidden="true">{% for src in post.photos %}<span{% if loop.first %} class="on"{% endif %}></span>{% endfor %}</div>
-        <span class="act-count">1 / {{ post.photos | length }}</span>
+        <div class="act-dots" aria-hidden="true">{% for src in pics %}<span{% if loop.first %} class="on"{% endif %}></span>{% endfor %}</div>
+        <span class="act-count">1 / {{ pics | length }}</span>
         {% endif %}
       </div>
       <div class="act-side">

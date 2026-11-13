@@ -251,7 +251,8 @@ def build(include_drafts: bool) -> int:
             continue
         rel = f"posts/{p.slug}/cover-auto.png"
         ok = covers.make_cover(OUT / rel, cat=p.category, cat_title=cats[p.category]["title"],
-                               keyword=(p.tags[0] if p.tags else cats[p.category]["title"]),
+                               keyword=next((t for t in p.tags if t.replace(" ", "") != "오킴스활동"),
+                                            cats[p.category]["title"]),
                                author=p.author, date_label=p.date_label,
                                logo=ROOT / "assets" / "logo.png", seed=p.slug)
         if ok:

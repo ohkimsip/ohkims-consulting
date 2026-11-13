@@ -690,3 +690,6 @@ a:hover .arrow { transform: translate(2px, -2px); }
   .ex-contact-main, .ex-contact-prep { padding: 30px 22px; }
   .ex-lead { font-size: 17.6px; }
 }
+
+/* 사진 없는 오킴스 활동 글: 자동 대표 이미지 */
+.act-media.act-auto { background: var(--brand-deep); }
