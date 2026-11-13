@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block body_class %}page-expertise{% endblock %}
+{% block main %}
+<section class="container page-head">
+  <nav class="crumbs" aria-label="위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/expertise/">컨설팅 분야</a><span aria-hidden="true">/</span><span>{{ area.title }}</span></nav>
+  <div class="page-title">
+    <span class="no">{{ area.no }}</span>
+    <h1>{{ area.title }}</h1>
+    <span class="en">{{ area.en }}</span>
+  </div>
+  <p class="ex-lead">{{ area.lead }}</p>
+  <nav class="cat-tabs" aria-label="컨설팅 분야">
+    {% for a in areas %}<a href="/expertise/{{ a.slug }}/"{% if a.slug == area.slug %} aria-current="page"{% endif %}>{{ a.title }}</a>{% endfor %}
+  </nav>
+</section>
+
+<section class="container ex-body">
+  <div class="ex-row">
+    <h2 class="ex-h">이런 기업에 필요합니다</h2>
+    <ul class="ex-for">{% for t in area.for_whom %}<li>{{ t }}</li>{% endfor %}</ul>
+  </div>
+
+  <div class="ex-row">
+    <h2 class="ex-h">제공 업무</h2>
+    <div class="ex-services">
+      {% for s in area.services %}
+      <div class="ex-service"><span class="ex-sno">{{ '%02d' % loop.index }}</span><h3>{{ s.t }}</h3><p>{{ s.d }}</p></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="ex-row">
+    <h2 class="ex-h">진행 절차</h2>
+    <ol class="ex-steps">
+      {% for t, d in area.steps %}<li><span class="ex-stepn">{{ loop.index }}</span><strong>{{ t }}</strong><p>{{ d }}</p></li>{% endfor %}
+    </ol>
+  </div>
+
+  <div class="ex-row">
+    <h2 class="ex-h">제공 결과물</h2>
+    <ul class="ex-deliv">
+      {% for item in area.deliverables %}{% set parts = item.split(' | ') %}<li><strong>{{ parts[0] }}</strong>{% if parts|length > 1 %}<span>{{ parts[1] }}</span>{% endif %}</li>{% endfor %}
+    </ul>
+  </div>
+
+  <div class="ex-row">
+    <h2 class="ex-h">담당 변리사</h2>
+    <div class="ex-team">
+      {% for t in area.team %}
+      <a class="ex-member" href="/authors/{{ t.a.slug }}/">
+        {% if t.a.photo %}<figure class="author-portrait"><img src="{{ t.a.photo }}" alt="{{ t.a.display }} 사진"></figure>{% endif %}
+        <div class="ex-member-id"><strong>{{ t.a.display }}</strong><span>{{ t.a.role }}</span></div>
+        <ul>{% for h in t.picks %}<li>{{ h }}</li>{% endfor %}</ul>
+        <span class="ex-more">변리사 소개{{ m.arrow() }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if area.related %}
+  <div class="ex-row">
+    <h2 class="ex-h">관련 글</h2>
+    <div class="mag-grid ex-related">{% for p in area.related %}{{ m.mag_item(p) }}{% endfor %}</div>
+  </div>
+  {% endif %}
+
+  <div class="ex-row">
+    <h2 class="ex-h">자주 묻는 질문</h2>
+    <div class="ex-faq">
+      {% for q, a in area.faq %}
+      <details{% if loop.first %} open{% endif %}><summary>{{ q }}</summary><p>{{ a }}</p></details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="ex-contact">
+    <div class="ex-contact-main">
+      <p class="eyebrow">Consultation</p>
+      <h2>{{ area.title }} 상담</h2>
+      <p class="ex-contact-desc">담당 변리사가 기술과 사업 단계를 먼저 듣고, 필요한 업무 범위를 함께 정합니다.</p>
+      <div class="ex-contact-faces">
+        {% for t in area.team %}{% if t.a.face %}<img src="{{ t.a.face }}" alt="{{ t.a.display }}" title="{{ t.a.display }}">{% endif %}{% endfor %}
+        <span>{% for t in area.team %}{{ t.a.display }}{% if not loop.last %} · {% endif %}{% endfor %}</span>
+      </div>
+    </div>
+    <div class="ex-contact-prep">
+      <p class="ex-prep-title">상담 전에 준비하시면 좋은 자료</p>
+      <ul>
+        <li>제품·기술 소개 자료(회사 소개서, 시제품 사진 등)</li>
+        <li>보유 특허·상표 목록이나 출원 번호</li>
+        <li>궁금한 점과 일정(투자, 출시, 과제 신청 등)</li>
+      </ul>
+      <div class="ex-contact-actions">
+        <a class="btn-solid" href="mailto:{{ site.contact.linkHref | replace('mailto:', '') }}?subject={{ ('[상담] ' ~ area.title) | urlencode }}">메일로 상담 요청{{ m.arrow() }}</a>
+        <a class="ex-tel" href="{{ site.contact.tel }}">{{ site.contact.phone }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

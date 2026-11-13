@@ -312,6 +312,45 @@ def build(include_drafts: bool) -> int:
                   active_nav="/authors/", json_ld=[{"@context": "https://schema.org", "@type": "ProfilePage",
                                                     "mainEntity": person_ld(a)}])
 
+    # 컨설팅 분야(공식 홈페이지 업무분야 + 변리사 공개 이력)
+    ex_path = CONTENT / "expertise.json"
+    ex_urls = []
+    if ex_path.is_file():
+        ex = json.loads(ex_path.read_text(encoding="utf-8"))
+        by_slug_a = {a["slug"]: a for a in authors}
+        for area in ex["areas"]:
+            area["team"] = []
+            for t in area["attorneys"]:
+                a = by_slug_a.get(t["slug"])
+                if a:
+                    picks = [h for k in t.get("pick", []) for h in a["highlights"] if k in h]
+                    area["team"].append({"a": a, "picks": list(dict.fromkeys(picks))[:3]})
+            kws = area.get("keywords", [])
+            score = lambda p: sum(k in (p.title + " " + " ".join(p.tags) + " " + p.summary) for k in kws)
+            area["related"] = sorted([p for p in posts if score(p) >= 2], key=lambda p: (-score(p), -p.date.timestamp()))[:3]
+        by_slug = {a["slug"]: a for a in ex["areas"]}
+        crumbs = lambda items: {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": i, "name": n, "item": base_url + u} for i, (n, u) in enumerate(items, 1)]}
+        write("expertise/index.html", "expertise_index.html", ex=ex, by_slug=by_slug,
+              page_title=f"컨설팅 분야 | {site['site']['name']}", page_desc=ex["index"]["desc"],
+              canonical="/expertise/", active_nav="/expertise/",
+              json_ld=[crumbs([("홈", "/"), ("컨설팅 분야", "/expertise/")])])
+        ex_urls.append("/expertise/")
+        for area in ex["areas"]:
+            url = f"/expertise/{area['slug']}/"
+            ld = [{"@context": "https://schema.org", "@type": "Service", "name": area["title"],
+                   "alternateName": area["en"], "description": area["lead"], "provider": org,
+                   "serviceType": [s["t"] for s in area["services"]], "areaServed": "KR", "url": base_url + url,
+                   "employee": [person_ld(t["a"]) for t in area["team"]]},
+                  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+                      {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": ans}}
+                      for q, ans in area["faq"]]},
+                  crumbs([("홈", "/"), ("컨설팅 분야", "/expertise/"), (area["title"], url)])]
+            write(f"expertise/{area['slug']}/index.html", "expertise.html", area=area, areas=ex["areas"],
+                  page_title=f"{area['title']} | {site['site']['name']}", page_desc=area["lead"],
+                  canonical=url, active_nav="/expertise/", json_ld=ld)
+            ex_urls.append(url)
+
     # 검색용 목록, sitemap, robots
     (OUT / "search.json").write_text(json.dumps([
         {"t": p.title, "s": p.summary, "g": " ".join(p.tags), "c": cats[p.category]["title"],
@@ -320,6 +359,7 @@ def build(include_drafts: bool) -> int:
     urls = ["/"] + [f"/category/{c}/" for c in cats] + [p.url for p in posts]
     if authors:
         urls += ["/authors/"] + [f"/authors/{a['slug']}/" for a in authors]
+    urls += ex_urls
     (OUT / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "".join(f"  <url><loc>{html.escape(base + u)}</loc></url>\n" for u in urls)

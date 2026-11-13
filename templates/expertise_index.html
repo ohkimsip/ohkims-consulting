@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block body_class %}page-expertise-index{% endblock %}
+{% block main %}
+<section class="container page-head">
+  <nav class="crumbs" aria-label="위치"><a href="/">홈</a><span aria-hidden="true">/</span><span>컨설팅 분야</span></nav>
+  <div class="page-title">
+    <h1>{{ ex.index.title }}</h1>
+    <span class="en">{{ ex.index.en }}</span>
+  </div>
+  <p class="ex-lead">{{ ex.index.desc }}</p>
+</section>
+
+<section class="container ex-body">
+  <div class="ex-finder" id="finder">
+    <h2 class="ex-h">{{ ex.index.finder_title }}</h2>
+    <p class="muted">{{ ex.index.finder_desc }}</p>
+    <div class="ex-finder-grid">
+      {% for f in ex.index.finder %}{% set a = by_slug[f.to] %}
+      <a class="ex-q" href="/expertise/{{ a.slug }}/"><span class="ex-q-text">{{ f.q }}</span><span class="ex-q-to">{{ a.title }}{{ m.arrow() }}</span></a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="ex-areas">
+    {% for a in ex.areas %}
+    <a class="ex-area" href="/expertise/{{ a.slug }}/">
+      <span class="ex-area-no">{{ a.no }}</span>
+      <div>
+        <h2>{{ a.title }}</h2>
+        <p class="ex-area-en">{{ a.en }}</p>
+        <p class="ex-area-lead">{{ a.lead }}</p>
+        <p class="ex-area-svc">{% for s in a.services %}{{ s.t }}{% if not loop.last %} · {% endif %}{% endfor %}</p>
+      </div>
+      <div class="ex-area-faces">{% for t in a.team %}{% if t.a.face %}<img src="{{ t.a.face }}" alt="{{ t.a.display }}" title="{{ t.a.display }}">{% endif %}{% endfor %}</div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
