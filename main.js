@@ -48,3 +48,23 @@
   input.addEventListener("input", render);
   input.addEventListener("keydown", (e) => { if (e.key === "Escape") { panel.hidden = true; btn.setAttribute("aria-expanded", "false"); btn.focus(); } });
 })();
+
+// 오킴스 활동 사진 넘김
+document.querySelectorAll("[data-carousel]").forEach((box) => {
+  const track = box.querySelector(".act-track");
+  const slides = track.children.length;
+  const prev = box.querySelector(".prev"), next = box.querySelector(".next");
+  const dots = box.querySelectorAll(".act-dots span"), count = box.querySelector(".act-count");
+  if (!prev) return;
+  const idx = () => Math.round(track.scrollLeft / track.clientWidth);
+  const update = () => {
+    const i = idx();
+    prev.disabled = i <= 0; next.disabled = i >= slides - 1;
+    dots.forEach((d, k) => d.classList.toggle("on", k === i));
+    if (count) count.textContent = `${i + 1} / ${slides}`;
+  };
+  prev.addEventListener("click", () => track.scrollBy({ left: -track.clientWidth }));
+  next.addEventListener("click", () => track.scrollBy({ left: track.clientWidth }));
+  track.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
+  update();
+});

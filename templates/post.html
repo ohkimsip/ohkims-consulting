@@ -4,6 +4,45 @@
 {% block og_type %}article{% endblock %}
 {% block body_class %}page-post cat-{{ cat.id }}{% endblock %}
 {% block main %}
+{% if post.layout == 'photo' %}
+<article class="post post-photo">
+  <div class="container">
+    <nav class="crumbs" aria-label="위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/category/{{ cat.id }}/">{{ cat.title }}</a></nav>
+    <div class="act">
+      <div class="act-media" data-carousel>
+        <div class="act-track">
+          {% for src in post.photos %}<figure class="act-slide"><img src="{{ src }}" alt="{{ post.title }} 사진 {{ loop.index }}"{% if not loop.first %} loading="lazy"{% endif %}></figure>{% endfor %}
+        </div>
+        {% if post.photos | length > 1 %}
+        <button class="act-nav prev" type="button" aria-label="이전 사진"></button>
+        <button class="act-nav next" type="button" aria-label="다음 사진"></button>
+        <div class="act-dots" aria-hidden="true">{% for src in post.photos %}<span{% if loop.first %} class="on"{% endif %}></span>{% endfor %}</div>
+        <span class="act-count">1 / {{ post.photos | length }}</span>
+        {% endif %}
+      </div>
+      <div class="act-side">
+        <div class="act-account">
+          <span class="act-avatar"><img src="/assets/logo.png" alt=""></span>
+          <div><strong>특허법인 오킴스</strong><span>OhKims IP · 오킴스 활동</span></div>
+        </div>
+        <h1>{{ post.title }}</h1>
+        {% if post.info %}
+        <dl class="act-info">{% for k, v in post.info %}<div><dt>{{ k }}</dt><dd>{{ v }}</dd></div>{% endfor %}</dl>
+        {% endif %}
+        <div class="act-caption">{{ post.body_html | safe }}</div>
+        {% if post.tags %}<p class="act-tags">{% for t in post.tags %}<span>#{{ t | replace(' ', '') }}</span>{% endfor %}</p>{% endif %}
+        <p class="act-meta">
+          {% if post.author_info %}<a href="/authors/{{ post.author_info.slug }}/">{{ post.author }}</a>{% elif post.author %}<span>{{ post.author }}</span>{% endif %}
+          <time datetime="{{ post.iso }}">{{ post.date_label }}</time>
+        </p>
+      </div>
+    </div>
+  </div>
+  <footer class="container post-foot">
+    <a class="link-line back-link" href="/category/{{ cat.id }}/">{{ cat.title }} 목록으로{{ m.arrow() }}</a>
+  </footer>
+</article>
+{% else %}
 <article class="post">
   <header class="container post-head">
     <nav class="crumbs" aria-label="위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/category/{{ cat.id }}/">{{ cat.title }}</a></nav>
@@ -40,12 +79,15 @@
     <a class="link-line back-link" href="/category/{{ cat.id }}/">{{ cat.title }} 목록으로{{ m.arrow() }}</a>
   </footer>
 </article>
+{% endif %}
 
 {% if related %}
 <section class="container related">
   <h2 class="related-title">{{ cat.title }}의 다른 글</h2>
   {% if cat.id == 'magazine' %}
   <div class="mag-grid">{% for p in related %}{{ m.mag_item(p) }}{% endfor %}</div>
+  {% elif cat.id == 'inside-ohkims' %}
+  <div class="insta-grid">{% for p in related %}{{ m.insta_item(p) }}{% endfor %}</div>
   {% else %}
   <div class="card-grid">{% for p in related %}{{ m.grid_card(p, cat) }}{% endfor %}</div>
   {% endif %}

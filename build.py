@@ -15,6 +15,8 @@ _site/ 아래에 메인·분류 목록·글 상세 페이지를 만든다.
     summary   목록·미리보기용 한두 문장 (선택, 없으면 본문 앞부분)
     cover     대표 사진 파일 이름(글 폴더 안) (선택)
     meta      카드 오른쪽 작은 글씨, 예: WIPO · 2024 (선택)
+    layout    photo 이면 사진형 글(오킴스 활동): 사진 넘김 + 짧은 글 + 해시태그 (선택)
+    event·when·place·host  사진형 글의 행사명·일시·장소·주최 (선택)
     draft     true 이면 게시하지 않음 (선택)
 """
 from __future__ import annotations
@@ -58,6 +60,9 @@ class Post:
     faq: list = field(default_factory=list)  # [(질문, 답)] — 「## 자주 묻는 질문」 아래 ### 질문들
     author_info: dict | None = None
     auto_cover: str = ""
+    layout: str = ""
+    photos: list = field(default_factory=list)  # 사진형 글의 사진 주소(순서대로)
+    info: list = field(default_factory=list)  # [(항목, 값)] — 행사·일시·장소·주최
 
     @property
     def url(self) -> str:
@@ -164,6 +169,19 @@ def load_posts(cat_ids: set[str], include_drafts: bool) -> list[Post]:
             if cover and not (f.parent / cover).is_file():
                 raise ValueError(f"대표 사진 파일 없음: {cover}")
             md.reset()
+            layout = meta.get("layout", "").lower()
+            photos = []
+            if layout == "photo":
+                # 사진형: 본문의 글 폴더 사진을 모두 위쪽 사진 넘김으로 옮기고 본문에서는 뺀다
+                names = [n for n in re.findall(r"!\[[^\]]*\]\(([^)\s]+)\)", body)
+                         if "/" not in n and (f.parent / n).is_file()]
+                for n in names:
+                    body = re.sub(rf"!\[[^\]]*\]\({re.escape(n)}\)[ \t]*\n?", "", body)
+                photos = [f"/posts/{slug}/{n}" for n in dict.fromkeys(([cover] if cover else []) + names)]
+                if not cover and names:
+                    cover = names[0]
+            info = [(lab, meta[k]) for k, lab in (("event", "행사"), ("when", "일시"), ("place", "장소"), ("host", "주최"))
+                    if meta.get(k)]
             posts.append(Post(
                 slug=slug,
                 title=meta["title"],
@@ -177,6 +195,9 @@ def load_posts(cat_ids: set[str], include_drafts: bool) -> list[Post]:
                 body_html=diagrams.render(md.convert(body)),
                 src_dir=f.parent,
                 faq=extract_faq(body),
+                layout=layout,
+                photos=photos,
+                info=info,
             ))
         except Exception as e:  # 한 글이 잘못돼도 나머지는 빌드
             errors.append(f"  - {f.relative_to(ROOT)}: {e}")

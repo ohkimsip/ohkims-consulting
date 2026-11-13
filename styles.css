@@ -340,7 +340,7 @@ a:hover .arrow { transform: translate(2px, -2px); }
 .post-body ol { list-style: decimal; }
 .post-body li + li { margin-top: .35em; }
 /* 본문 양쪽 정렬(11.13 변리사 의견) — 표·도해 안 짧은 칸은 제외 */
-.post-body > p, .post-body > ul > li, .post-body > ol > li, .post-body blockquote p, .author-box p { text-align: justify; text-justify: inter-character; }
+.post-body > p, .post-body > ul > li, .post-body > ol > li, .post-body blockquote p, .author-box p { text-align: justify; }
 .post-body a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
 .post-body strong { font-weight: 700; }
 .post-body blockquote { border-left: 3px solid var(--brand); padding: 4px 0 4px 20px; color: var(--ink-2); font-size: 17.6px; }
@@ -539,3 +539,55 @@ a:hover .arrow { transform: translate(2px, -2px); }
 @media (min-width: 1800px) { body { zoom: 1.2; } }
 @media (min-width: 2300px) { body { zoom: 1.4; } }
 @media (min-width: 3000px) { body { zoom: 1.8; } }
+
+/* ===== 오킴스 활동: 사진형 글(인스타형) ===== */
+.post-photo { padding-top: 28px; }
+.act { margin-top: 22px; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(360px, 1fr); align-items: start; border: 1px solid var(--line); background: #fff; }
+.act-media { position: relative; background: #0f1d21; aspect-ratio: 4 / 3; overflow: hidden; align-self: start; }
+.act-track { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth; }
+.act-track::-webkit-scrollbar { display: none; }
+.act-slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; display: grid; place-items: center; }
+.act-slide img { width: 100%; height: 100%; object-fit: contain; }
+.act-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border-radius: 50%; border: 0; background: rgba(255,255,255,.88); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+.act-nav::after { content: ""; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; border: solid #222; border-width: 0 2px 2px 0; }
+.act-nav.prev { left: 14px; } .act-nav.prev::after { transform: translate(-30%, -50%) rotate(135deg); }
+.act-nav.next { right: 14px; } .act-nav.next::after { transform: translate(-70%, -50%) rotate(-45deg); }
+.act-nav[disabled] { opacity: 0; pointer-events: none; }
+.act-dots { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; justify-content: center; gap: 6px; }
+.act-dots span { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.45); }
+.act-dots span.on { background: #fff; }
+.act-count { position: absolute; right: 14px; top: 14px; background: rgba(0,0,0,.55); color: #fff; font-size: 12.5px; padding: 3px 10px; border-radius: 12px; font-variant-numeric: tabular-nums; }
+.act-side { padding: 26px 30px 28px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.act-account { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.act-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--brand); display: grid; place-items: center; overflow: hidden; flex: none; }
+.act-avatar img { width: 70%; height: auto; }
+.act-account strong { display: block; font-size: 16px; letter-spacing: -0.02em; }
+.act-account span { font-size: 13px; color: var(--muted); }
+.act-side h1 { font-size: clamp(24px, 2.2vw, 30px); font-weight: 700; letter-spacing: -0.035em; line-height: 1.35; }
+.act-info { display: grid; gap: 6px; background: var(--soft-bg); padding: 14px 16px; font-size: 15px; }
+.act-info div { display: grid; grid-template-columns: 44px 1fr; gap: 10px; }
+.act-info dt { color: var(--muted); }
+.act-caption { font-size: 17px; line-height: 1.85; word-break: keep-all; }
+.act-caption p { text-align: justify; }
+.act-caption p + p { margin-top: .8em; }
+.act-tags { display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--brand); font-size: 15.4px; font-weight: 600; }
+.act-meta { margin-top: auto; display: flex; gap: 12px; font-size: 13.5px; color: var(--muted); padding-top: 14px; border-top: 1px solid var(--line); }
+.act-meta a:hover { color: var(--ink); }
+@media (max-width: 900px) {
+  .act { grid-template-columns: 1fr; }
+  .act-media { aspect-ratio: 4 / 3; }
+  .act-side { padding: 20px 18px 22px; }
+}
+
+/* 오킴스 활동 목록: 정사각 사진 격자 */
+.insta-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.insta-item { position: relative; display: block; aspect-ratio: 1 / 1; overflow: hidden; background: var(--soft-bg); }
+.insta-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.insta-multi { position: absolute; right: 10px; top: 10px; width: 18px; height: 18px; border: 2px solid #fff; border-radius: 3px; box-shadow: 4px -4px 0 -1px rgba(255,255,255,.85); filter: drop-shadow(0 1px 2px rgba(0,0,0,.4)); }
+.insta-over { position: absolute; inset: auto 0 0 0; padding: 40px 16px 14px; background: linear-gradient(transparent, rgba(0,0,0,.72)); color: #fff; display: grid; gap: 4px; }
+.insta-over strong { font-size: 16px; line-height: 1.4; letter-spacing: -0.02em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.insta-over time { font-size: 12.5px; opacity: .85; }
+/* 사진 없는 글(자동 대표 이미지)은 자르지 않고 */
+.insta-item.auto img { object-fit: contain; background: var(--brand-deep); }
+.insta-item:hover img { transform: scale(1.04); }
+@media (max-width: 700px) { .insta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .insta-over strong { font-size: 14px; } }

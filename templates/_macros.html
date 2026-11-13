@@ -91,3 +91,13 @@
   </a>
 </article>
 {% endmacro %}
+
+
+{# 오킴스 활동: 정사각 사진 격자(인스타형) #}
+{% macro insta_item(p) %}
+<a class="insta-item{% if not p.cover %} auto{% endif %}" href="{{ p.url }}">
+  <img src="{{ p.image_url }}" alt="" loading="lazy">
+  {% if p.photos | length > 1 %}<span class="insta-multi" aria-label="사진 {{ p.photos | length }}장"></span>{% endif %}
+  <span class="insta-over"><strong>{{ p.title }}</strong><time datetime="{{ p.iso }}">{{ p.date_label }}</time></span>
+</a>
+{% endmacro %}

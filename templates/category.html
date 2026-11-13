@@ -25,6 +25,10 @@
     <p class="muted">새 글이 게시되면 이곳에 가장 먼저 보입니다.</p>
     <a class="link-line" href="/">홈으로{{ m.arrow() }}</a>
   </div>
+  {% elif cat.id == 'inside-ohkims' %}
+  <div class="insta-grid">
+    {% for p in items %}{{ m.insta_item(p) }}{% endfor %}
+  </div>
   {% elif cat.id == 'magazine' %}
   <div class="mag-grid">
     {% for p in items %}{{ m.mag_item(p) }}{% endfor %}
