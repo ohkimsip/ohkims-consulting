@@ -1,5 +1,6 @@
 ---
 title: R&D의 방향을 묻고, IP에서 해답을 찾습니다
+draft: true
 category: inside-ohkims
 date: 2026-11-13
 author: 박시형 변리사

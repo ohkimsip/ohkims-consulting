@@ -1,5 +1,6 @@
 ---
 title: 국경을 넘는 지식재산 보호 — 오킴스 공개 수행 이력
+draft: true
 category: inside-ohkims
 date: 2026-11-13
 author: 주병국 변리사

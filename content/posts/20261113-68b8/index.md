@@ -1,5 +1,6 @@
 ---
 title: 이차전지·반도체 소재 기업이 특허에서 챙길 점
+draft: true
 category: inside-ohkims
 date: 2026-11-13
 author: 이의철 변리사

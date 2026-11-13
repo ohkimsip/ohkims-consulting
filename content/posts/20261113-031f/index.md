@@ -1,5 +1,6 @@
 ---
 title: 연료전지 아이디어를 구체적인 특허출원으로
+draft: true
 category: inside-ohkims
 date: 2026-11-13
 author: 이의철 변리사

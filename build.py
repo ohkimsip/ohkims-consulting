@@ -170,7 +170,7 @@ def load_posts(cat_ids: set[str], include_drafts: bool) -> list[Post]:
                 category=meta["category"],
                 date=parse_date(meta["date"]),
                 author=meta.get("author", ""),
-                tags=[t.strip() for t in re.split(r"[,·]", meta.get("tags", "")) if t.strip()],
+                tags=list(dict.fromkeys(t.strip() for t in re.split(r"[,·]", meta.get("tags", "")) if t.strip())),
                 summary=meta.get("summary") or plain_excerpt(body),
                 cover=cover,
                 meta=meta.get("meta", ""),

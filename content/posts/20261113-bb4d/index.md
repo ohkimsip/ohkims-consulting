@@ -1,5 +1,6 @@
 ---
 title: 지역의 혁신기업과 함께 쌓아가는 성장의 기반
+draft: true
 category: inside-ohkims
 date: 2026-11-13
 author: 김종승 변리사

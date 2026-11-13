@@ -1,5 +1,6 @@
 ---
 title: 오킴스가 수행해 온 정부 IP 지원·기술보호·사업화 컨설팅
+draft: true
 category: inside-ohkims
 date: 2026-11-13
 author: 김종승 변리사

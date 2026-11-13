@@ -339,6 +339,8 @@ a:hover .arrow { transform: translate(2px, -2px); }
 .post-body ul { list-style: disc; }
 .post-body ol { list-style: decimal; }
 .post-body li + li { margin-top: .35em; }
+/* 본문 양쪽 정렬(11.13 변리사 의견) — 표·도해 안 짧은 칸은 제외 */
+.post-body > p, .post-body > ul > li, .post-body > ol > li, .post-body blockquote p, .author-box p { text-align: justify; text-justify: inter-character; }
 .post-body a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
 .post-body strong { font-weight: 700; }
 .post-body blockquote { border-left: 3px solid var(--brand); padding: 4px 0 4px 20px; color: var(--ink-2); font-size: 17.6px; }
