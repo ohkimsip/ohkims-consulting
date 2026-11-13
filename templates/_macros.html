@@ -16,7 +16,7 @@
 {% macro feature_card(p, cat) %}
 <a class="feature" href="{{ p.url }}">
   <figure class="thumb">
-    <img src="{{ p.cover_url or cat.image }}" alt="" loading="lazy">
+    <img src="{{ p.image_url or cat.image }}" alt="" loading="lazy">
     <figcaption>{{ cat.imageCaption }}</figcaption>
     <span class="circle-arrow small">{{ arrow() }}</span>
   </figure>
@@ -48,7 +48,7 @@
 {% macro grid_card(p, cat) %}
 <article class="grid-card">
   <a href="{{ p.url }}">
-    <figure class="thumb"><img src="{{ p.cover_url or cat.image }}" alt="" loading="lazy"></figure>
+    <figure class="thumb"><img src="{{ p.image_url or cat.image }}" alt="" loading="lazy"></figure>
     <div class="feature-meta"><span class="tag">{{ p.tags | join(' · ') if p.tags else cat.title }}</span><time datetime="{{ p.iso }}">{{ p.date_label }}</time></div>
     <h3>{{ p.title }}</h3>
     <p>{{ p.summary }}</p>
@@ -77,14 +77,17 @@
 </aside>
 {% endmacro %}
 
-{# 매거진 글 줄(사진 없이 글 중심) #}
+{# 매거진 글 줄(대표 이미지 작게 + 글 중심) #}
 {% macro mag_item(p) %}
-<article class="mag-item">
+<article class="mag-item{% if p.image_url %} has-thumb{% endif %}">
   <a href="{{ p.url }}">
-    <p class="mag-kicker"><span class="tag">{{ p.tags | join(' · ') if p.tags else '매거진' }}</span><time datetime="{{ p.iso }}">{{ p.date_label }}</time></p>
-    <h3>{{ p.title }}</h3>
-    <p class="mag-summary">{{ p.summary }}</p>
-    {% if p.author %}<p class="mag-author">{{ p.author }}</p>{% endif %}
+    {% if p.image_url %}<figure class="mag-thumb"><img src="{{ p.image_url }}" alt="" loading="lazy"></figure>{% endif %}
+    <div class="mag-text">
+      <p class="mag-kicker"><span class="tag">{{ p.tags | join(' · ') if p.tags else '매거진' }}</span><time datetime="{{ p.iso }}">{{ p.date_label }}</time></p>
+      <h3>{{ p.title }}</h3>
+      <p class="mag-summary">{{ p.summary }}</p>
+      {% if p.author %}<p class="mag-author">{{ p.author }}</p>{% endif %}
+    </div>
   </a>
 </article>
 {% endmacro %}

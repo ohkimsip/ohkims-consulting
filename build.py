@@ -30,6 +30,9 @@ from datetime import datetime
 from pathlib import Path
 
 import markdown
+
+import covers
+import diagrams
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 ROOT = Path(__file__).resolve().parent
@@ -54,6 +57,7 @@ class Post:
     src_dir: Path | None = None
     faq: list = field(default_factory=list)  # [(질문, 답)] — 「## 자주 묻는 질문」 아래 ### 질문들
     author_info: dict | None = None
+    auto_cover: str = ""
 
     @property
     def url(self) -> str:
@@ -70,6 +74,11 @@ class Post:
     @property
     def cover_url(self) -> str:
         return f"{self.url}{self.cover}" if self.cover else ""
+
+    @property
+    def image_url(self) -> str:
+        """목록·공유용 이미지: 직접 넣은 사진 → 자동 대표 이미지 순."""
+        return self.cover_url or self.auto_cover
 
 
 def parse_front_matter(text: str) -> tuple[dict, str]:
@@ -165,7 +174,7 @@ def load_posts(cat_ids: set[str], include_drafts: bool) -> list[Post]:
                 summary=meta.get("summary") or plain_excerpt(body),
                 cover=cover,
                 meta=meta.get("meta", ""),
-                body_html=md.convert(body),
+                body_html=diagrams.render(md.convert(body)),
                 src_dir=f.parent,
                 faq=extract_faq(body),
             ))
@@ -215,6 +224,18 @@ def build(include_drafts: bool) -> int:
 
     clean_dir(OUT)
 
+    # 사진 없는 글의 대표 이미지(분류 무늬 + 핵심 주제어 + 작성자). 글꼴이 없으면 분류 기본 사진.
+    for p in posts:
+        if p.cover:
+            continue
+        rel = f"posts/{p.slug}/cover-auto.png"
+        ok = covers.make_cover(OUT / rel, cat=p.category, cat_title=cats[p.category]["title"],
+                               keyword=(p.tags[0] if p.tags else cats[p.category]["title"]),
+                               author=p.author, date_label=p.date_label,
+                               logo=ROOT / "assets" / "logo.png", seed=p.slug)
+        if ok:
+            p.auto_cover = "/" + rel
+
     def write(rel: str, tpl: str, **ctx):
         path = OUT / rel
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -242,7 +263,7 @@ def build(include_drafts: bool) -> int:
         ld = [{"@context": "https://schema.org", "@type": "Article", "headline": p.title,
                "description": p.summary, "datePublished": p.iso, "inLanguage": "ko",
                "mainEntityOfPage": base_url + p.url, "publisher": org,
-               "image": base_url + (p.cover_url or cats[p.category]["image"]),
+               "image": base_url + (p.image_url or cats[p.category]["image"]),
                "author": person_ld(p.author_info) if p.author_info else org,
                "keywords": p.tags}]
         if p.faq:
@@ -251,7 +272,7 @@ def build(include_drafts: bool) -> int:
         write(f"posts/{p.slug}/index.html", "post.html", post=p, cat=cats[p.category],
               related=related, page_title=f"{p.title} | {site['site']['name']}",
               page_desc=p.summary, canonical=p.url, json_ld=ld,
-              og_image=p.cover_url or cats[p.category]["image"])
+              og_image=p.image_url or cats[p.category]["image"])
         for extra in p.src_dir.iterdir():  # 글 폴더의 사진 등
             if extra.name != "index.md" and extra.is_file():
                 shutil.copy2(extra, OUT / "posts" / p.slug / extra.name)
