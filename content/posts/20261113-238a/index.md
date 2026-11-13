@@ -1,6 +1,6 @@
 ---
 title: 연구실의 기술이 시장을 만나는 접점
-category: client-stories
+category: inside-ohkims
 date: 2026-11-13
 author: 박시형 변리사
 tags: 대학, 기술사업화, 기술사업화, 기술이전
