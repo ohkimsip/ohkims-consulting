@@ -27,7 +27,7 @@ from __future__ import annotations
 import html
 import re
 
-BLOCK = re.compile(r'<pre><code class="language-(steps|checklist|compare|keypoint|flow)">(.*?)</code></pre>', re.S)
+BLOCK = re.compile(r'<pre><code class="language-(steps|checklist|compare|keypoint|flow|bars)">(.*?)</code></pre>', re.S)
 
 
 def _lines(raw: str) -> list[str]:
@@ -78,7 +78,33 @@ def _flow(lines):
     return f'<div class="dg dg-flow" role="list">{chips}</div>'
 
 
-RENDER = {"steps": _steps, "checklist": _checklist, "compare": _compare, "keypoint": _keypoint, "flow": _flow}
+def _bars(lines):
+    """막대그래프(11.14, 특허 통계 글). 「# 제목」, 「이름 | 숫자」 줄, 「※ 주석」 줄. 숫자는 글자로 남아 검색·AI가 읽는다."""
+    title, notes, rows = "", [], []
+    for l in lines:
+        if l.startswith("#"):
+            title = l.lstrip("# ").strip()
+        elif l.startswith(("※", "*")):
+            notes.append(l.lstrip("※* ").strip())
+        elif "|" in l:
+            name, _, val = l.partition("|")
+            m = re.search(r"-?\d[\d,]*(?:\.\d+)?", val)
+            if m:
+                rows.append((name.strip(), float(m.group(0).replace(",", "")), val.strip()))
+    if not rows:
+        return ""
+    top = max(v for _, v, _ in rows) or 1
+    items = "".join(
+        f'<li><span class="dg-bar-name">{_e(n)}</span><span class="dg-bar-track">'
+        f'<span class="dg-bar-fill" style="width:{max(2, round(v / top * 100))}%"></span></span>'
+        f'<span class="dg-bar-val">{_e(t)}</span></li>' for n, v, t in rows)
+    head = f'<figcaption class="dg-title">{_e(title)}</figcaption>' if title else ""
+    foot = "".join(f'<p class="dg-note">※ {_e(n)}</p>' for n in notes)
+    return f'<figure class="dg dg-bars">{head}<ul>{items}</ul>{foot}</figure>'
+
+
+RENDER = {"steps": _steps, "checklist": _checklist, "compare": _compare, "keypoint": _keypoint, "flow": _flow,
+          "bars": _bars}
 
 
 def render(body_html: str) -> str:

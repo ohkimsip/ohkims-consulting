@@ -391,6 +391,15 @@ a:hover .arrow { transform: translate(2px, -2px); }
 .dg-chip { background: #fff; border: 1.5px solid var(--brand); color: var(--brand); font-weight: 600; font-size: 15px; padding: 8px 14px; border-radius: 999px; }
 .dg-chip:last-child { background: var(--brand); color: #fff; }
 .dg-arrow { color: var(--faint); font-size: 17px; }
+.dg-bars { margin: 0; padding: 20px 24px; border: 1px solid var(--line); }
+.dg-bars .dg-title { font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--brand); margin-bottom: 12px; }
+.dg-bars ul { list-style: none !important; padding: 0 !important; display: grid; gap: 10px; }
+.dg-bars li { display: grid; grid-template-columns: minmax(72px, 30%) 1fr auto; align-items: center; gap: 12px; margin-top: 0 !important; font-size: 15px; }
+.dg-bar-name { color: var(--muted); overflow-wrap: anywhere; }
+.dg-bar-track { height: 14px; background: var(--soft-bg); border-radius: 2px; overflow: hidden; }
+.dg-bar-fill { display: block; height: 100%; background: var(--brand); }
+.dg-bar-val { font-weight: 600; font-variant-numeric: tabular-nums; min-width: 3.5em; text-align: right; }
+.dg-bars .dg-note { margin-top: 12px !important; font-size: 13px; color: var(--faint); }
 
 /* 매거진 대표 이미지(작게) */
 .mag-item.has-thumb a { grid-template-columns: 200px 1fr; align-items: start; gap: 22px; }
