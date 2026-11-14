@@ -36,6 +36,14 @@
   {% for o in json_ld | default([]) %}
   <script type="application/ld+json">{{ o | tojson_ld | safe }}</script>
   {% endfor %}
+  {% set an = site.site.analytics | default({}) %}
+  {% if an.ga4 %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ an.ga4 }}"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ an.ga4 }}');</script>
+  {% endif %}
+  {% if an.cloudflare %}
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{ an.cloudflare }}"}'></script>
+  {% endif %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
   <a class="skip" href="#main">본문 바로가기</a>

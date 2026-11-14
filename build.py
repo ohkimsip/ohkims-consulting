@@ -394,6 +394,10 @@ def build(include_drafts: bool) -> int:
     (OUT / "rss.xml").write_text(seo.rss_xml(base, site["site"]["name"], site["site"]["description"], posts, cats),
                                  encoding="utf-8")
     (OUT / "llms.txt").write_text(seo.llms_txt(base, site, posts, cats, authors, ex), encoding="utf-8")
+    # IndexNow 키 파일(빙·네이버 등에 새 글을 바로 알릴 때 소유 확인용, 공개가 원래 방식)
+    key = site["site"].get("indexnow_key", "")
+    if re.fullmatch(r"[0-9a-f]{32}", key or ""):
+        (OUT / f"{key}.txt").write_text(key, encoding="utf-8")
     write("404.html", "404.html", page_title=f"페이지를 찾을 수 없습니다 | {site['site']['name']}",
           page_desc="요청하신 페이지를 찾을 수 없습니다.", canonical="/404.html")
 
