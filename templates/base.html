@@ -37,7 +37,11 @@
   <script type="application/ld+json">{{ o | tojson_ld | safe }}</script>
   {% endfor %}
   {% set an = site.site.analytics | default({}) %}
-  {% if an.ga4 %}
+  {% if an.google_tag %}
+  {# 구글 애널리틱스가 새 속성에 준 Google 태그 설치 코드 그대로(11.14) #}
+  <script async src="https://www.googletagmanager.com/gtm.js?id={{ an.google_tag }}"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());</script>
+  {% elif an.ga4 %}
   <script async src="https://www.googletagmanager.com/gtag/js?id={{ an.ga4 }}"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ an.ga4 }}');</script>
   {% endif %}
