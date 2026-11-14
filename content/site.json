@@ -267,6 +267,9 @@
     ],
     "linkLabel": "컨설팅 상담 문의",
     "linkHref": "mailto:ip@ohkimslaw.com",
+    "_kakao_설명": "카카오톡 채널 1:1 채팅 주소(예: https://pf.kakao.com/_xxxx/chat). 넣으면 상담 영역·컨설팅 분야·글 하단에 「카카오톡 상담」 버튼이 생긴다(비우면 없음). 11.14",
+    "kakaoLabel": "카카오톡으로 상담하기",
+    "kakaoHref": "",
     "phone": "02. 6952. 8689",
     "tel": "tel:0269528689"
   },

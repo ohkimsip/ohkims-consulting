@@ -75,7 +75,10 @@
         <p class="post-cta-title">이 주제로 상담이 필요하신가요?</p>
         <p class="muted">특허법인 오킴스 {{ site.contact.phone }} · ip@ohkimslaw.com</p>
       </div>
-      <a class="btn-solid" href="/#contact">상담 문의{{ m.arrow() }}</a>
+      <div class="post-cta-actions">
+        <a class="btn-solid" href="/#contact">상담 문의{{ m.arrow() }}</a>
+        {% if site.contact.kakaoHref %}<a class="btn-outline" href="{{ site.contact.kakaoHref }}" target="_blank" rel="noopener">카카오톡 상담{{ m.arrow() }}</a>{% endif %}
+      </div>
     </div>
     <a class="link-line back-link" href="/category/{{ cat.id }}/">{{ cat.title }} 목록으로{{ m.arrow() }}</a>
   </footer>

@@ -108,6 +108,7 @@
       </ul>
       <div class="ex-contact-actions">
         <a class="btn-solid" href="mailto:{{ site.contact.linkHref | replace('mailto:', '') }}?subject={{ ('[상담] ' ~ area.title) | urlencode }}">메일로 상담 요청{{ m.arrow() }}</a>
+        {% if site.contact.kakaoHref %}<a class="btn-outline" href="{{ site.contact.kakaoHref }}" target="_blank" rel="noopener">카카오톡 상담{{ m.arrow() }}</a>{% endif %}
         <a class="ex-tel" href="{{ site.contact.tel }}">{{ site.contact.phone }}</a>
       </div>
     </div>

@@ -355,6 +355,7 @@ a:hover .arrow { transform: translate(2px, -2px); }
 .post-cta { width: 100%; background: var(--soft-bg); padding: 26px 28px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
 .post-cta-title { margin-top: 10px; font-size: 20.9px; font-weight: 700; letter-spacing: -0.03em; }
 .post-cta .muted { margin-top: 6px; font-size: 14.3px; }
+.post-cta-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .btn-solid { display: inline-flex; align-items: center; gap: 24px; background: var(--brand); color: #fff; padding: 14px 22px; font-size: 14.9px; font-weight: 600; }
 .btn-solid:hover { background: var(--brand-deep); }
 .related { padding-top: 40px; padding-bottom: 90px; border-top: 1px solid var(--line); margin-top: 40px; }

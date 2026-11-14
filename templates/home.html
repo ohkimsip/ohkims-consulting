@@ -102,6 +102,7 @@
     <p class="eyebrow light">{{ ct.eyebrow }}</p>
     <h2>{{ ct.titleLines | lines | safe }}</h2>
     <a class="contact-link" href="{{ ct.linkHref }}">{{ ct.linkLabel }}{{ m.arrow() }}</a>
+    {% if ct.kakaoHref %}<a class="contact-link contact-kakao" href="{{ ct.kakaoHref }}" target="_blank" rel="noopener">{{ ct.kakaoLabel }}{{ m.arrow() }}</a>{% endif %}
     <a class="contact-phone" href="{{ ct.tel }}">{{ ct.phone }}</a>
   </div>
 </section>
