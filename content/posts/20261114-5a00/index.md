@@ -2,7 +2,7 @@
 title: 티로보틱스·KAIST 피지컬 AI 협약, 사업화 앞둔 특허 과제
 category: client-stories
 date: 2026-11-14
-author: 박시형 변리사
+author: 이의철 변리사
 tags: 피지컬 AI, 휴머노이드 로봇, 자율이동로봇(AMR), 산학협력
 summary: 티로보틱스가 KAIST 제조피지컬AI연구소와 피지컬 AI 표준화·실증·사업화 협력 MOU를 맺었습니다. 공동 실증 성과의 권리 귀속과 해외 특허·상표 준비 포인트를 함께 짚습니다.
 ---
