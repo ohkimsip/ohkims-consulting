@@ -45,6 +45,18 @@
       .head { align-items: flex-start; }
       .all { width: 100%; justify-content: center; }
     }
+    /* 첫 화면용(home): 대표 사이트의 「포트폴리오」·「전문가 그룹」과 같은 틀 — 가운데 짧은 막대+제목, 검은 사각 버튼(11.20 디자인 통일) */
+    .home .head { display: block; text-align: center; border-bottom: 0; padding-bottom: 0; }
+    .home .head::before { content: ""; display: block; width: 26px; height: 3px; background: #050d0f; margin: 0 auto 18px; }
+    .home .eyebrow { display: none; }
+    .home .head h2 { font-size: clamp(30px, 4.4vw, 44px); font-weight: 600; color: #050d0f; letter-spacing: -0.03em; margin-top: 0; }
+    .home .head p { margin-top: 14px; color: #3c4448; }
+    .home .grid { margin-top: 36px; }
+    .home .meta .cat { color: #050d0f; }
+    .home .card:hover h3 { color: #050d0f; text-decoration: underline; text-underline-offset: 3px; }
+    .home .more { text-align: center; margin-top: 34px; }
+    .home .more a { display: inline-block; background: #050d0f; color: #fff; padding: 11px 34px; font-size: 14.5px; font-weight: 600; }
+    .home .more a:hover { background: #2a3336; }
     /* 첫 화면용(home): 모바일은 그림 왼쪽·제목 오른쪽 가로 카드로 높이를 줄인다 */
     @media (max-width: 560px) {
       .home .grid { gap: 16px; margin-top: 16px; }
@@ -67,7 +79,7 @@
         <h2>{% if home %}최신 인사이트{% else %}오킴스 인사이트{% endif %}</h2>
         <p>변리사가 직접 쓰는 매거진, 고객사 기술 분야의 동향, 고객 소식과 오킴스 활동을 전합니다.</p>
       </div>
-      <a class="all" href="{{ site.site.url }}/" target="_blank" rel="noopener">인사이트 전체 보기 ↗</a>
+      {% if not home %}<a class="all" href="{{ site.site.url }}/" target="_blank" rel="noopener">인사이트 전체 보기 ↗</a>{% endif %}
     </div>
     {% if not home %}<nav class="tabs" aria-label="분류">
       {% for c in cats.values() %}<a href="{{ site.site.url }}/category/{{ c.id }}/" target="_blank" rel="noopener">{{ c.title }}</a>{% endfor %}
@@ -83,6 +95,7 @@
       </a>
       {% endfor %}
     </div>
+    {% if home %}<div class="more"><a href="{{ site.site.url }}/" target="_blank" rel="noopener">더보기</a></div>{% endif %}
   </div>
 </body>
 </html>
