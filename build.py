@@ -400,6 +400,8 @@ def build(include_drafts: bool) -> int:
         (OUT / f"{key}.txt").write_text(key, encoding="utf-8")
     # ohkimsip.com(Wix) 인사이트 페이지 액자용 최신 글 칸(11.20) — 검색 제외, sitemap에 넣지 않음
     write("embed/latest/index.html", "embed_latest.html", items=posts[:6])
+    # 대표 사이트 첫 화면용 3개 칸(11.20, 모바일은 가로형 카드로 짧게)
+    write("embed/home/index.html", "embed_latest.html", items=posts[:3], home=True)
     write("404.html", "404.html", page_title=f"페이지를 찾을 수 없습니다 | {site['site']['name']}",
           page_desc="요청하신 페이지를 찾을 수 없습니다.", canonical="/404.html")
 

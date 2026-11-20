@@ -45,21 +45,33 @@
       .head { align-items: flex-start; }
       .all { width: 100%; justify-content: center; }
     }
+    /* 첫 화면용(home): 모바일은 그림 왼쪽·제목 오른쪽 가로 카드로 높이를 줄인다 */
+    @media (max-width: 560px) {
+      .home .grid { gap: 16px; margin-top: 16px; }
+      .home .card { grid-template-columns: 112px minmax(0, 1fr); column-gap: 14px; row-gap: 4px; align-items: start; }
+      .home .thumb { grid-row: 1 / span 3; grid-column: 1; aspect-ratio: 1 / 1; }
+      .home .thumb img { object-position: 8% center; }  /* 표지 글자가 왼쪽에 있어 왼쪽 기준으로 자른다 */
+      .home .card > :not(.thumb) { grid-column: 2; }
+      .home .card h3 { font-size: 15.5px; }
+      .home .card p { display: none; }
+      .home .meta { font-size: 12px; }
+      .home .by { font-size: 12.5px; color: var(--muted); }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="wrap{% if home %} home{% endif %}">
     <div class="head">
       <div>
         <p class="eyebrow">OhKims Insight</p>
-        <h2>오킴스 인사이트</h2>
+        <h2>{% if home %}최신 인사이트{% else %}오킴스 인사이트{% endif %}</h2>
         <p>변리사가 직접 쓰는 매거진, 고객사 기술 분야의 동향, 고객 소식과 오킴스 활동을 전합니다.</p>
       </div>
       <a class="all" href="{{ site.site.url }}/" target="_blank" rel="noopener">인사이트 전체 보기 ↗</a>
     </div>
-    <nav class="tabs" aria-label="분류">
+    {% if not home %}<nav class="tabs" aria-label="분류">
       {% for c in cats.values() %}<a href="{{ site.site.url }}/category/{{ c.id }}/" target="_blank" rel="noopener">{{ c.title }}</a>{% endfor %}
-    </nav>
+    </nav>{% endif %}
     <div class="grid">
       {% for p in items %}
       <a class="card" href="{{ site.site.url }}{{ p.url }}" target="_blank" rel="noopener">
