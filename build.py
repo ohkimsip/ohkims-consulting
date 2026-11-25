@@ -124,6 +124,22 @@ def make_markdown() -> markdown.Markdown:
     return md
 
 
+# 주소만 적은 경우(예: 「관련 기사: https://…」)도 링크가 되게 한다(11.25 무아베모션 글).
+# 이미 링크인 주소([글](주소), <주소>), 인라인 코드, 코드 울타리 안은 건드리지 않는다.
+BARE_URL = re.compile(r"(?<![(<\[\"'=/`\w])https?://[A-Za-z0-9\-._~:/?#@!$&*+,;=%]*[A-Za-z0-9\-_~/#@$&*+=%]")
+
+
+def link_bare_urls(md_text: str) -> str:
+    out, fenced = [], False
+    for line in md_text.split("\n"):
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+        elif not fenced and "http" in line:
+            line = BARE_URL.sub(lambda m: f"<{m.group(0)}>", line)
+        out.append(line)
+    return "\n".join(out)
+
+
 def plain_excerpt(md_text: str, limit: int = 110) -> str:
     t = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", md_text)
     t = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", t)
@@ -203,7 +219,7 @@ def load_posts(cat_ids: set[str], include_drafts: bool) -> list[Post]:
                 summary=meta.get("summary") or plain_excerpt(body),
                 cover=cover,
                 meta=meta.get("meta", ""),
-                body_html=diagrams.render(md.convert(body)),
+                body_html=diagrams.render(md.convert(link_bare_urls(body))),
                 src_dir=f.parent,
                 faq=extract_faq(body),
                 layout=layout,
